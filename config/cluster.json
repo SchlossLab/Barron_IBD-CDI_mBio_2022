@@ -1,13 +1,13 @@
 {
  "__default__": {
-  "account_slurm": "YOUR_ACCOUNT_HERE",
+  "account_slurm": "pschloss1",
   "partition": "standard",
   "jobname": "{rule}.{wildcards}",
   "nodes": 1,
   "procs": 1,
   "pmem": "8GB",
   "walltime": "48:00:00",
-  "email": "YOUR_EMAIL_HERE",
+  "email": "sovacool@umich.edu",
   "mail_type": "FAIL",
   "outfile": "log/hpc/jobs/{rule}.{wildcards}.out"
  },

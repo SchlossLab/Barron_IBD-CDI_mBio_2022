@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=mikropml
+#SBATCH --job-name=IBD-CDI
 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -10,10 +10,10 @@
 
 #SBATCH --output=log/hpc/slurm-%j_%x.out
 
-#SBATCH --account=YOUR_ACCOUNT_HERE
+#SBATCH --account=pschloss1
 #SBATCH --partition=standard
 
-#SBATCH --mail-user=YOUR_EMAIL_HERE
+#SBATCH --mail-user=sovacool@umich.edu
 #SBATCH --mail-type=BEGIN,END
 
-time snakemake --profile config/slurm --latency-wait 90 --configfile config/config_robust.yml
+time snakemake --profile config/slurm --latency-wait 90 --configfile config/config.yml
