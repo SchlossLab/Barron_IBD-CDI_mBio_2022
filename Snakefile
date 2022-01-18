@@ -13,10 +13,21 @@ rule targets:
     input:
         'report.md'
 
+rule join_metadata:
+    input:
+        R='code/join_metadata.R',
+        meta='data/raw/ml_metadata.xlsx',
+        otu='data/raw/sample.final.shared'
+    output:
+        csv='data/processed/otu_day0.csv',
+        groups='data/processed/cages.Rds'
+    script:
+        'code/join_metadata.R'
+
 rule preprocess_data:
     input:
         R="code/preproc.R",
-        csv=config['dataset']
+        csv=rules.join_metadata.output.csv
     output:
         rds='data/dat_proc.Rds'
     log:
@@ -33,11 +44,11 @@ rule preprocess_data:
 rule run_ml:
     input:
         R="code/ml.R",
-        rds=rules.preprocess_data.output.rds
+        dat=rules.preprocess_data.output.rds,
+        groups=rules.join_metadata.output.groups
     output:
         model="results/runs/{method}_{seed}_model.Rds",
-        perf=temp("results/runs/{method}_{seed}_performance.csv"),
-        feat=temp("results/runs/{method}_{seed}_feature-importance.csv")
+        perf=temp("results/runs/{method}_{seed}_performance.csv")
     log:
         "log/runs/run_ml.{method}_{seed}.txt"
     benchmark:

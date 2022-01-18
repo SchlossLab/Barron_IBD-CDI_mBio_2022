@@ -1,9 +1,6 @@
-dataset: data/otu_large.csv
-outcome_colname: dx
+outcome_colname: pos_cdiff_day1
 ml_methods:
- - glmnet
  - rf
- - svmRadial
 kfold: 5
 ncores: 4
 nseeds: 10
