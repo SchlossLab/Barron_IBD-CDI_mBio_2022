@@ -19,15 +19,19 @@ rule join_metadata:
         meta='data/raw/ml_metadata.xlsx',
         otu='data/raw/sample.final.shared'
     output:
-        csv='data/processed/otu_day0.csv',
-        groups='data/processed/cages.Rds'
+        dat='data/processed/otu_day0.csv',
+        groups='data/processed/cages.txt'
     script:
         'code/join_metadata.R'
+
+#rule get_group_combos:
+#    input:
+#        groups=
 
 rule preprocess_data:
     input:
         R="code/preproc.R",
-        csv=rules.join_metadata.output.csv
+        csv=rules.join_metadata.output.dat
     output:
         rds='data/dat_proc.Rds'
     log:
