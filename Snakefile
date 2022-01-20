@@ -19,7 +19,7 @@ rule join_metadata:
     input:
         R='code/join_metadata.R',
         meta='data/raw/ml_metadata.xlsx',
-        otu='data/raw/sample.final.shared'
+        dat='data/raw/sample.final.shared'
     output:
         dat='data/processed/otu_day0.csv'
     script:
@@ -37,8 +37,7 @@ rule preprocess_data:
         "benchmarks/preprocess_data.txt"
     params:
         outcome_colname=outcome_colname
-    resources:
-        ncores=ncores
+    threads: ncores
     script:
         "code/preproc.R"
 
