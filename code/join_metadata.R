@@ -1,19 +1,12 @@
-library(data.table)
-library(here)
-library(readxl)
 library(tidyverse)
 
-metadata <- read_excel(here('data', 'raw', 'ml_metadata.xlsx'))
-otudata <- fread(here('data', 'raw', 'sample.final.shared'))
+metadata <- readxl::read_excel(snakemake@input[['meta']])
+otudata <- data.table::fread(snakemake@input[['dat']])
 
 dat <- inner_join(metadata,
                   otudata %>% rename(group = Group),
                   by = "group")
 
-fwrite(dat %>% select(pos_cdiff_d1, starts_with('Otu')),
-       file = here('data', 'processed', 'otu_day0.csv'))
+data.table::fwrite(dat %>% select(pos_cdiff_d1, starts_with('Otu')),
+       file = snakemake@output[['dat']])
 
-write_delim(dat %>% select("cage"),
-       file = here('data', 'processed', 'cages.txt'),
-       delim = '\n',
-       col_names = FALSE)

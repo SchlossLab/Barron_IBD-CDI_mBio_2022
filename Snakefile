@@ -1,5 +1,7 @@
 configfile: 'config/config.yml'
 
+groups = ['cage']
+
 ncores = config['ncores']
 ml_methods = config['ml_methods']
 kfold = config['kfold']
@@ -19,14 +21,9 @@ rule join_metadata:
         meta='data/raw/ml_metadata.xlsx',
         otu='data/raw/sample.final.shared'
     output:
-        dat='data/processed/otu_day0.csv',
-        groups='data/processed/cages.txt'
+        dat='data/processed/otu_day0.csv'
     script:
         'code/join_metadata.R'
-
-#rule get_group_combos:
-#    input:
-#        groups=
 
 rule preprocess_data:
     input:
@@ -48,55 +45,51 @@ rule preprocess_data:
 rule run_ml:
     input:
         R="code/ml.R",
-        dat=rules.preprocess_data.output.rds,
-        groups=rules.join_metadata.output.groups
+        meta='data/raw/ml_metadata.xlsx',
+        dat=rules.preprocess_data.output.rds
     output:
-        model="results/runs/{method}_{seed}_model.Rds",
-        perf=temp("results/runs/{method}_{seed}_performance.csv")
+        model="results/runs/group-{group_colname}/{method}_{seed}_model.Rds",
+        perf=temp("results/runs/group-{group_colname}/{method}_{seed}_performance.csv")
     log:
-        "log/runs/run_ml.{method}_{seed}.txt"
+        "log/runs/group-{group_colname}/run_ml.{method}_{seed}.txt"
     benchmark:
-        "benchmarks/runs/run_ml.{method}_{seed}.txt"
+        "benchmarks/runs/group-{group_colname}/run_ml.{method}_{seed}.txt"
     params:
         outcome_colname=outcome_colname,
-        method="{method}",
-        seed="{seed}",
         kfold=kfold
-    resources:
-        ncores=ncores
+    threads: ncores
     script:
         "code/ml.R"
 
 rule combine_results:
     input:
         R="code/combine_results.R",
-        csv=expand("results/runs/{method}_{seed}_{{type}}.csv", method = ml_methods, seed = seeds)
+        csv=expand("results/runs/group-{group_colname}/{method}_{seed}_{{type}}.csv", method = ml_methods, seed = seeds, group_colname = groups)
     output:
         csv='results/{type}_results.csv'
     log:
         "log/combine_results_{type}.txt"
-    benchmark:
-        "benchmarks/combine_results_{type}.txt"
     script:
         "code/combine_results.R"
 
 rule combine_hp_performance:
     input:
         R='code/combine_hp_perf.R',
-        rds=expand('results/runs/{{method}}_{seed}_model.Rds', seed=seeds)
+        rds=expand('results/runs/group-{{group_colname}}/{{method}}_{seed}_model.Rds', seed=seeds)
     output:
-        rds='results/hp_performance_results_{method}.Rds'
+        rds='results/group-{group_colname}/hp_performance_results_{method}.Rds'
     log:
-        "log/combine_hp_perf_{method}.txt"
-    benchmark:
-        "benchmarks/combine_hp_perf_{method}.txt"
+        "log/group-{group_colname}/combine_hp_perf_{method}.txt"
     script:
         "code/combine_hp_perf.R"
 
 rule combine_benchmarks:
     input:
         R='code/combine_benchmarks.R',
-        tsv=expand(rules.run_ml.benchmark, method = ml_methods, seed = seeds)
+        tsv=expand(rules.run_ml.benchmark, 
+                   method = ml_methods, 
+                   seed = seeds, 
+                   group_colname = groups)
     output:
         csv='results/benchmarks_results.csv'
     log:
@@ -116,13 +109,13 @@ rule plot_performance:
         "code/plot_perf.R"
 
 rule plot_hp_performance:
-    input: 
+    input:
         R='code/plot_hp_perf.R',
         rds=rules.combine_hp_performance.output.rds,
     output:
-        plot='figures/hp_performance_{method}.png'
+        plot='figures/group-{group_colname}/hp_performance_{method}.png'
     log:
-        'log/plot_hp_perf_{method}.txt'
+        'log/group-{group_colname}/plot_hp_perf_{method}.txt'
     script:
         'code/plot_hp_perf.R'
 
@@ -142,7 +135,7 @@ rule render_report:
         Rmd='report.Rmd',
         R='code/render.R',
         perf_plot=rules.plot_performance.output.plot,
-        hp_plot=expand(rules.plot_hp_performance.output.plot, method = ml_methods),
+        hp_plot=expand(rules.plot_hp_performance.output.plot, method = ml_methods, group_colname = groups),
         bench_plot=rules.plot_benchmarks.output.plot
     output:
         doc='report.md'
