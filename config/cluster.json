@@ -12,11 +12,11 @@
   "outfile": "log/hpc/jobs/{rule}.{wildcards}.out"
  },
  "preprocess_data": {
-  "procs": "{resources.ncores}",
+  "procs": "{threads}",
   "pmem": "2GB"
  },
  "run_ml": {
-  "procs": "{resources.ncores}",
+  "procs": "{threads}",
   "pmem": "4GB"
  },
  "combine_hp_performance": {
