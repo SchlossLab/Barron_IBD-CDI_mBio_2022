@@ -64,14 +64,13 @@ Here's a small example DAG if we were to use only 2 seeds and 2 ML methods:
     
        ``` sh
        mamba env create -f config/environment.yml
-       conda activate smk-ML
+       conda activate ibd-cdi
        ```
        
     - Alternatively, you can install the dependencies listed in
     [`config/environment.yml`](config/environment.yml) however you like.
 
 1. Edit the configuration file [`config/config.yml`](config/config.yml).
-    - `dataset`: the path to the dataset as a csv file.
     - `outcome_colname`: column name of the outcomes for the dataset.
     - `ml_methods`: list of machine learning methods to use. Must be supported by mikropml.
     - `kfold`: k number for k-fold cross validation during model training.
