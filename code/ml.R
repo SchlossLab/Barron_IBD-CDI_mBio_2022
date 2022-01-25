@@ -1,4 +1,5 @@
 source("code/log_smk.R")
+library(dplyr)
 
 doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads[[1]])
