@@ -30,7 +30,7 @@ rule preprocess_data:
         R="code/preproc.R",
         csv=rules.join_metadata.output.dat
     output:
-        rds='data/dat_proc.Rds'
+        rds='data/processed/dat_preproc.Rds'
     log:
         "log/preprocess_data.txt"
     benchmark:
@@ -45,7 +45,7 @@ rule run_ml:
     input:
         R="code/ml.R",
         meta='data/raw/ml_metadata.xlsx',
-        dat=rules.preprocess_data.output.rds
+        rds=rules.preprocess_data.output.rds
     output:
         model="results/runs/group-{group_colname}/{method}_{seed}_model.Rds",
         perf=temp("results/runs/group-{group_colname}/{method}_{seed}_performance.csv")
