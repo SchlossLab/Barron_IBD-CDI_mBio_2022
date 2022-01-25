@@ -10,10 +10,10 @@
 
 #SBATCH --output=log/hpc/slurm-%j_%x.out
 
-#SBATCH --account=pschloss1
+#SBATCH --account=YOUR_ACCOUNT_HERE
 #SBATCH --partition=standard
 
-#SBATCH --mail-user=sovacool@umich.edu
+#SBATCH --mail-user=YOUR_EMAIL_HERE
 #SBATCH --mail-type=BEGIN,END
 
 time snakemake --profile config/slurm --latency-wait 90 --configfile config/config_test.yml
