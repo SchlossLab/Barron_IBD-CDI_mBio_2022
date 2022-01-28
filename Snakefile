@@ -1,6 +1,6 @@
 configfile: 'config/config.yml'
 
-groups = ['cage']
+groups = ['cage', 'experiment']
 
 ncores = config['ncores']
 ml_methods = config['ml_methods']

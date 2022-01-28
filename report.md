@@ -1,6 +1,6 @@
 ML Results
 ================
-2022-01-25
+2022-01-28
 
 Machine learning algorithms used include: rf. Models were trained with
 100 different random partitions of the data into training and testing
@@ -12,7 +12,7 @@ sets using 5-fold cross validation.
 
 ## Hyperparameter Performance
 
-<img src="figures/group-cage/hp_performance_rf.png" width="80%" />
+<img src="figures/group-cage/hp_performance_rf.png" width="80%" /><img src="figures/group-experiment/hp_performance_rf.png" width="80%" />
 
 ## Memory Usage & Runtime
 
