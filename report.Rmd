@@ -22,19 +22,19 @@ different random partitions of the data into training and testing sets using
 
 ## Model Performance
 
-```{r perf_plot, out.width='80%'}
+```{r perf_plot, out.width='60%'}
 include_graphics(snakemake@input[['perf_plot']])
 ```
 
 ## Hyperparameter Performance
 
-```{r hp_plot, out.width='80%'}
+```{r hp_plot, out.width='60%'}
 include_graphics(snakemake@input[['hp_plot']])
 ```
 
 ## Memory Usage & Runtime
 
-```{r runtime_plot, out.width='80%'}
+```{r runtime_plot, out.width='60%'}
 include_graphics(snakemake@input[['bench_plot']])
 ```
 
