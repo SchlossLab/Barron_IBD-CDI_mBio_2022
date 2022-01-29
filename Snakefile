@@ -1,7 +1,7 @@
 configfile: 'config/config.yml'
 
 groups = ['cage', 'experiment']
-training_fracs = [0.8, 0.7, 0.6]
+training_fracs = [0.8, 0.7, 0.65]
 
 ncores = config['ncores']
 ml_methods = config['ml_methods']
@@ -117,7 +117,7 @@ rule plot_hp_performance:
         R='code/plot_hp_perf.R',
         rds=rules.combine_hp_performance.output.rds,
     output:
-        plot='figures/group-{group_colname}/trainfrac-{train_frac}//hp_performance_{method}.png'
+        plot='figures/group-{group_colname}/trainfrac-{train_frac}/hp_performance_{method}.png'
     log:
         'log/group-{group_colname}/trainfrac-{train_frac}/plot_hp_perf_{method}.txt'
     script:
