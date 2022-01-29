@@ -19,6 +19,7 @@ ml_results <- mikropml::run_ml(
 )
 
 saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])
+readr::write_csv(ml_results$test_data, file = snakemake@output[['test']])
 readr::write_csv(ml_results$performance %>%
                      mutate(groups_colname = snakemake@wildcards[['groups_colname']]),
                  snakemake@output[["perf"]])

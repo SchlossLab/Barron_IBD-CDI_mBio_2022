@@ -48,6 +48,7 @@ rule run_ml:
         rds=rules.preprocess_data.output.rds
     output:
         model="results/runs/group-{group_colname}/{method}_{seed}_model.Rds",
+        test="results/runs/group-{group_colname}/{method}_{seed}_test-data.csv",
         perf=temp("results/runs/group-{group_colname}/{method}_{seed}_performance.csv")
     log:
         "log/runs/group-{group_colname}/run_ml.{method}_{seed}.txt"
