@@ -14,16 +14,17 @@ dat <- read_csv(snakemake@input[['csv']],
                   mean_load = col_double(),
                   cpu_time = col_double(),
                   method = col_character(),
-                  seed = col_double()
+                  seed = col_double(),
+                  groups_colanme = col_character()
                 )) %>%
   mutate(runtime_mins = s / 60,
          memory_gb = max_rss / 1024) %>%
-  select(method, runtime_mins, memory_gb) %>%
-  pivot_longer(-method, names_to = 'metric') %>%
-  group_by(method)
+  select(groups_colname, runtime_mins, memory_gb) %>%
+  pivot_longer(-groups_colname, names_to = 'metric') %>%
+  group_by(groups_colname)
 
 bench_plot <- dat %>%
-  ggplot(aes(method, value)) +
+  ggplot(aes(groups_colname, value)) +
   geom_boxplot() +
   facet_wrap(metric ~ ., scales = 'free') +
   theme_classic() +
