@@ -5,8 +5,9 @@ doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads[[1]])
 
 data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
+group_colname <- snakemake@wildcards[['group_colname']]
 groups_vctr <- readxl::read_excel(snakemake@input[['meta']]) %>%
-    pull(snakemake@wildcards[['group_colname']])
+    pull(group_colname)
 
 ml_results <- mikropml::run_ml(
   dataset = data_processed,
@@ -21,5 +22,5 @@ ml_results <- mikropml::run_ml(
 saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])
 readr::write_csv(ml_results$test_data, file = snakemake@output[['test']])
 readr::write_csv(ml_results$performance %>%
-                     mutate(groups_colname = snakemake@wildcards[['groups_colname']]),
+                     mutate(groups = group_colname),
                  snakemake@output[["perf"]])
