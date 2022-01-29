@@ -4,7 +4,10 @@ library(tidyverse)
 perf_plot <- snakemake@input[["csv"]] %>%
   read_csv() %>%
     select(cv_metric_AUC, AUC, prAUC, groups, train_frac) %>%
-    pivot_longer(c(cv_metric_AUC, AUC, prAUC), names_to = 'metric') %>%
+    rename(`cv AUROC` = cv_metric_AUC,
+           `test AUROC` = AUC,
+           `test PRAUC` = prAUC) %>%
+    pivot_longer(-c(groups, train_frac), names_to = 'metric') %>%
     ggplot(aes(x = groups, y = value, color = metric)) +
     facet_wrap('train_frac') +
     geom_boxplot() +
