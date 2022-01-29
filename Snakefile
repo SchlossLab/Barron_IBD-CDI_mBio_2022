@@ -63,7 +63,8 @@ rule run_ml:
 rule combine_results:
     input:
         R="code/combine_results.R",
-        csv=expand("results/runs/group-{group_colname}/{method}_{seed}_{{type}}.csv", method = ml_methods, seed = seeds, group_colname = groups)
+        csv=expand("results/runs/group-{group_colname}/{method}_{seed}_{{type}}.csv",
+                   method = ml_methods, seed = seeds, group_colname = groups)
     output:
         csv='results/{type}_results.csv'
     log:
@@ -85,9 +86,9 @@ rule combine_hp_performance:
 rule combine_benchmarks:
     input:
         R='code/combine_benchmarks.R',
-        tsv=expand(rules.run_ml.benchmark, 
-                   method = ml_methods, 
-                   seed = seeds, 
+        tsv=expand(rules.run_ml.benchmark,
+                   method = ml_methods,
+                   seed = seeds,
                    group_colname = groups)
     output:
         csv='results/benchmarks_results.csv'
