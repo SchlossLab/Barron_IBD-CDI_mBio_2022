@@ -50,7 +50,7 @@ rule run_ml:
     output:
         model="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_model.Rds",
         test="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_test-data.csv",
-        perf=temp("results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_performance.csv")
+        perf="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_performance.csv"
     log:
         "log/runs/group-{group_colname}/trainfrac-{train_frac}/run_ml.{method}_{seed}.txt"
     benchmark:

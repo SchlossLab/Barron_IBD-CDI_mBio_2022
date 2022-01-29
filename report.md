@@ -3,7 +3,7 @@ ML Results
 2022-01-29
 
 Machine learning algorithms used include: rf. Models were trained with
-100 different random partitions of the data into training and testing
+10 different random partitions of the data into training and testing
 sets using 5-fold cross validation.
 
 ## Model Performance
@@ -12,10 +12,10 @@ sets using 5-fold cross validation.
 
 ## Hyperparameter Performance
 
-<img src="figures/group-cage/hp_performance_rf.png" width="60%" /><img src="figures/group-experiment/hp_performance_rf.png" width="60%" />
+<img src="figures/group-cage/trainfrac-0.8/hp_performance_rf.png" width="60%" /><img src="figures/group-cage/trainfrac-0.7/hp_performance_rf.png" width="60%" /><img src="figures/group-cage/trainfrac-0.65/hp_performance_rf.png" width="60%" /><img src="figures/group-experiment/trainfrac-0.8/hp_performance_rf.png" width="60%" /><img src="figures/group-experiment/trainfrac-0.7/hp_performance_rf.png" width="60%" /><img src="figures/group-experiment/trainfrac-0.65/hp_performance_rf.png" width="60%" />
 
 ## Memory Usage & Runtime
 
 <img src="figures/benchmarks.png" width="60%" />
 
-Each model training run was given 12 cores for parallelization.
+Each model training run was given 4 cores for parallelization.
