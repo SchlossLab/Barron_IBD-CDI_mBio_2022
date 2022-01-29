@@ -2,7 +2,8 @@
 data/
 log/
 benchmarks/
-results/
+results/runs/
+results/group*
 .Rproj.user
 *KLS*
 *_test*
