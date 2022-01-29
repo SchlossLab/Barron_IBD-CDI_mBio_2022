@@ -1,9 +1,9 @@
-.snakemake/
-data/
-log/
 benchmarks/
-results/runs/
-results/group*
-.Rproj.user
+data/
 *KLS*
+log/
+results/group*
+results/runs/
+.Rproj.user
+.snakemake/
 *_test*
