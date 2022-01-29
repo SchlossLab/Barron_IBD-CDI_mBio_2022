@@ -4,9 +4,10 @@ library(tidyverse)
 read_bench <- function(filename) {
     read_tsv(filename) %>%
         mutate(
-            groups_colname = str_replace(filename, "^benchmarks/runs/group-(.*)/run_ml.(.*)_(.*).txt", '\\1'),
-            method = str_replace(filename, "^benchmarks/runs/group-(.*)/run_ml.(.*)_(.*).txt", "\\2"),
-            seed = str_replace(filename, "^benchmarks/runs/group-(.*)/run_ml.(.*)_(.*).txt", "\\3")
+            groups_colname = str_replace(filename, "^benchmarks/runs/group-(.*)/trainfrac-(.*)/run_ml.(.*)_(.*).txt", '\\1'),
+            train_frac = str_replace(filename, "^benchmarks/runs/group-(.*)/trainfrac-(.*)/run_ml.(.*)_(.*).txt", "\\2"),
+            method = str_replace(filename, "^benchmarks/runs/group-(.*)/trainfrac-(.*)/run_ml.(.*)_(.*).txt", "\\3"),
+            seed = str_replace(filename, "^benchmarks/runs/group-(.*)/trainfrac-(.*)/run_ml.(.*)_(.*).txt", "\\4")
         )
 }
 

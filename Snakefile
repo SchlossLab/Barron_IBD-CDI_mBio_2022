@@ -1,6 +1,7 @@
 configfile: 'config/config.yml'
 
 groups = ['cage', 'experiment']
+training_fracs = [0.8, 0.7, 0.6]
 
 ncores = config['ncores']
 ml_methods = config['ml_methods']
@@ -47,13 +48,13 @@ rule run_ml:
         meta='data/raw/ml_metadata.xlsx',
         rds=rules.preprocess_data.output.rds
     output:
-        model="results/runs/group-{group_colname}/{method}_{seed}_model.Rds",
-        test="results/runs/group-{group_colname}/{method}_{seed}_test-data.csv",
-        perf=temp("results/runs/group-{group_colname}/{method}_{seed}_performance.csv")
+        model="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_model.Rds",
+        test="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_test-data.csv",
+        perf=temp("results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_performance.csv")
     log:
-        "log/runs/group-{group_colname}/run_ml.{method}_{seed}.txt"
+        "log/runs/group-{group_colname}/trainfrac-{train_frac}/run_ml.{method}_{seed}.txt"
     benchmark:
-        "benchmarks/runs/group-{group_colname}/run_ml.{method}_{seed}.txt"
+        "benchmarks/runs/group-{group_colname}/trainfrac-{train_frac}/run_ml.{method}_{seed}.txt"
     params:
         outcome_colname=outcome_colname,
         kfold=kfold
@@ -64,8 +65,9 @@ rule run_ml:
 rule combine_results:
     input:
         R="code/combine_results.R",
-        csv=expand("results/runs/group-{group_colname}/{method}_{seed}_{{type}}.csv",
-                   method = ml_methods, seed = seeds, group_colname = groups)
+        csv=expand("results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_{{type}}.csv",
+                   method = ml_methods, seed = seeds, group_colname = groups,
+                   train_frac = training_fracs)
     output:
         csv='results/{type}_results.csv'
     log:
@@ -76,11 +78,11 @@ rule combine_results:
 rule combine_hp_performance:
     input:
         R='code/combine_hp_perf.R',
-        rds=expand('results/runs/group-{{group_colname}}/{{method}}_{seed}_model.Rds', seed=seeds)
+        rds=expand('results/runs/group-{{group_colname}}/trainfrac-{{train_frac}}/{{method}}_{seed}_model.Rds', seed=seeds)
     output:
-        rds='results/group-{group_colname}/hp_performance_results_{method}.Rds'
+        rds='results/group-{group_colname}/trainfrac-{train_frac}/hp_performance_results_{method}.Rds'
     log:
-        "log/group-{group_colname}/combine_hp_perf_{method}.txt"
+        "log/group-{group_colname}/trainfrac-{train_frac}/combine_hp_perf_{method}.txt"
     script:
         "code/combine_hp_perf.R"
 
@@ -90,7 +92,8 @@ rule combine_benchmarks:
         tsv=expand(rules.run_ml.benchmark,
                    method = ml_methods,
                    seed = seeds,
-                   group_colname = groups)
+                   group_colname = groups,
+                   train_frac = training_fracs)
     output:
         csv='results/benchmarks_results.csv'
     log:
@@ -114,9 +117,9 @@ rule plot_hp_performance:
         R='code/plot_hp_perf.R',
         rds=rules.combine_hp_performance.output.rds,
     output:
-        plot='figures/group-{group_colname}/hp_performance_{method}.png'
+        plot='figures/group-{group_colname}/trainfrac-{train_frac}//hp_performance_{method}.png'
     log:
-        'log/group-{group_colname}/plot_hp_perf_{method}.txt'
+        'log/group-{group_colname}/trainfrac-{train_frac}/plot_hp_perf_{method}.txt'
     script:
         'code/plot_hp_perf.R'
 
@@ -136,7 +139,10 @@ rule render_report:
         Rmd='report.Rmd',
         R='code/render.R',
         perf_plot=rules.plot_performance.output.plot,
-        hp_plot=expand(rules.plot_hp_performance.output.plot, method = ml_methods, group_colname = groups),
+        hp_plot=expand(rules.plot_hp_performance.output.plot, 
+                       method = ml_methods, 
+                       group_colname = groups,
+                       train_frac = training_fracs),
         bench_plot=rules.plot_benchmarks.output.plot
     output:
         doc='report.md'

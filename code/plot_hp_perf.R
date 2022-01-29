@@ -7,7 +7,8 @@ hp_plot_list <- lapply(hp_perf$params, function(param) {
         ggplot2::theme_classic() +
         ggplot2::scale_color_brewer(palette = "Dark2") +
         ggplot2::labs(title = paste(unique(hp_perf$groups),
-                                    unique(hp_perf$method)))
+                                    unique(hp_perf$method),
+                                    unique(hp_perf$train_frac)))
 })
 hp_plot <- cowplot::plot_grid(plotlist = hp_plot_list)
 ggplot2::ggsave(snakemake@output[["plot"]])

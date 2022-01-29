@@ -3,9 +3,10 @@ library(dplyr)
 
 doFuture::registerDoFuture()
 future::plan(future::multicore, workers = snakemake@threads[[1]])
+group_colname <- snakemake@wildcards[['group_colname']]
+train_frac <- snakemake@wildcards[['train_frac']]
 
 data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
-group_colname <- snakemake@wildcards[['group_colname']]
 groups_vctr <- readxl::read_excel(snakemake@input[['meta']]) %>%
     pull(group_colname)
 
@@ -16,11 +17,13 @@ ml_results <- mikropml::run_ml(
   find_feature_importance = FALSE,
   kfold = as.numeric(snakemake@params[['kfold']]),
   seed = as.numeric(snakemake@wildcards[["seed"]]),
-  groups = groups_vctr
+  groups = groups_vctr,
+  training_frac = train_frac
 )
 
 saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])
 readr::write_csv(ml_results$test_data, file = snakemake@output[['test']])
 readr::write_csv(ml_results$performance %>%
-                     mutate(groups = group_colname),
+                     mutate(groups = group_colname,
+                            train_frac = train_frac),
                  snakemake@output[["perf"]])
