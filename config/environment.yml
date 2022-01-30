@@ -13,7 +13,7 @@ dependencies:
   - r-future
   - r-future.apply
   - r-here
-  - r-mikropml
+  - r-mikropml>=1.2.1
   - r-rmarkdown
   - r-rpart
   - r-tidyverse
