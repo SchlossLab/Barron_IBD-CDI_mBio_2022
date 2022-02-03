@@ -50,7 +50,8 @@ rule run_ml:
     output:
         model="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_model.Rds",
         test="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_test-data.csv",
-        perf="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_performance.csv"
+        perf="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_performance.csv",
+        feat="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_feature-importance.csv"
     log:
         "log/runs/group-{group_colname}/trainfrac-{train_frac}/run_ml.{method}_{seed}.txt"
     benchmark:
@@ -143,7 +144,8 @@ rule render_report:
                        method = ml_methods, 
                        group_colname = groups,
                        train_frac = training_fracs),
-        bench_plot=rules.plot_benchmarks.output.plot
+        bench_plot=rules.plot_benchmarks.output.plot,
+        feat_imp='results/feature-importance_results.csv'
     output:
         doc='report.md'
     log:

@@ -14,7 +14,7 @@ ml_results <- mikropml::run_ml(
   dataset = data_processed,
   method = snakemake@wildcards[["method"]],
   outcome_colname = snakemake@params[['outcome_colname']],
-  find_feature_importance = FALSE,
+  find_feature_importance = TRUE,
   kfold = as.numeric(snakemake@params[['kfold']]),
   seed = as.numeric(snakemake@wildcards[["seed"]]),
   groups = groups_vctr,
@@ -27,3 +27,7 @@ readr::write_csv(ml_results$performance %>%
                      mutate(groups = group_colname,
                             train_frac = train_frac),
                  snakemake@output[["perf"]])
+readr::write_csv(ml_results$feature_importance %>%
+                     mutate(groups = group_colname,
+                            train_frac = train_frac),
+                 snakemake@output[["feat"]])
