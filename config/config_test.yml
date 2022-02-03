@@ -4,3 +4,10 @@ ml_methods:
 kfold: 5
 ncores: 4
 nseeds: 1
+groups:
+- cage
+- experiment
+training_fracs:
+- 0.8
+- 0.7
+- 0.65

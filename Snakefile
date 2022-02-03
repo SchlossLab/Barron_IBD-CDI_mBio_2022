@@ -1,14 +1,14 @@
 configfile: 'config/config.yml'
 
-groups = ['cage', 'experiment']
-training_fracs = [0.8, 0.7, 0.65]
-
-ncores = config['ncores']
+outcome_colname = config['outcome_colname']
 ml_methods = config['ml_methods']
 kfold = config['kfold']
-outcome_colname = config['outcome_colname']
-
+ncores = config['ncores']
 nseeds = config['nseeds']
+
+groups = config['groups']
+training_fracs = config['training_fracs']
+
 start_seed = 100
 seeds = range(start_seed, start_seed + nseeds)
 

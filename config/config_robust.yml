@@ -1,6 +1,0 @@
-outcome_colname: pos_cdiff_d1
-ml_methods:
- - rf
-kfold: 5
-ncores: 12
-nseeds: 100
