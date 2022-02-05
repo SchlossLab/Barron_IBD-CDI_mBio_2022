@@ -63,6 +63,25 @@ rule run_ml:
     script:
         "code/ml.R"
 
+rule predict:
+    input:
+        R='code/predict.R',
+        model=rules.run_ml.output.model,
+        test=rules.run_ml.output.test
+    output:
+        csv="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_predictions.csv"
+    script:
+        'code/predict.R'
+
+rule calc_sensspec:
+    input:
+        R='code/calc_sensspec.R',
+        csv=expand("results/runs/group-{{group_colname}}/trainfrac-{{train_frac}}/{{method}}_{seed}_predictions.csv", seed = seeds)
+    output:
+        csv="results/group-{{group_colname}}/trainfrac-{{train_frac}}/{{method}}_sensspec.csv"
+    script:
+        'code/calc_sensspec.R'
+
 rule combine_results:
     input:
         R="code/combine_results.R",
@@ -113,6 +132,16 @@ rule plot_performance:
     script:
         "code/plot_perf.R"
 
+rule plot_feature_importance:
+    input:
+        R='code/plot_feature-importance.R',
+        csv='results/feature-importance_results.csv'
+    output:
+        plot='figures/feature-importance.png'
+    log: "log/plot_feature-importance.txt"
+    script:
+        'code/plot_feature-importance.R'
+
 rule plot_hp_performance:
     input:
         R='code/plot_hp_perf.R',
@@ -140,12 +169,12 @@ rule render_report:
         Rmd='report.Rmd',
         R='code/render.R',
         perf_plot=rules.plot_performance.output.plot,
+        feat_plot=rules.plot_feature_importance.output.plot,
         hp_plot=expand(rules.plot_hp_performance.output.plot, 
                        method = ml_methods, 
                        group_colname = groups,
                        train_frac = training_fracs),
-        bench_plot=rules.plot_benchmarks.output.plot,
-        feat_imp='results/feature-importance_results.csv'
+        bench_plot=rules.plot_benchmarks.output.plot
     output:
         doc='report.md'
     log:
