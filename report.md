@@ -8,22 +8,22 @@ sets using 5-fold cross validation.
 
 ## Model Performance
 
-<img src="figures/performance_box.png" width="60%" />
+<img src="figures/performance_box.png" width="50%" />
 
 ## Hyperparameter Performance
 
-<img src="figures/group-experiment/trainfrac-0.65/hp_performance_rf.png" width="60%" />
+<img src="figures/group-experiment/trainfrac-0.65/hp_performance_rf.png" width="50%" />
 
 ## Memory Usage & Runtime
 
-<img src="figures/benchmarks.png" width="60%" />
+<img src="figures/benchmarks.png" width="50%" />
 
 Each model training run was given 12 cores for parallelization.
 
 ## Feature Importance
 
-![](figures/plot-feats-histograms-1.png)<!-- -->![](figures/plot-feats-histograms-2.png)<!-- -->![](figures/plot-feats-histograms-3.png)<!-- -->
+<img src="figures/plot-feats-histograms-1.png" width="50%" /><img src="figures/plot-feats-histograms-2.png" width="50%" /><img src="figures/plot-feats-histograms-3.png" width="50%" />
 
 ### Performance differences
 
-![](figures/feature-importance.png)<!-- -->
+<img src="figures/feature-importance.png" width="50%" />

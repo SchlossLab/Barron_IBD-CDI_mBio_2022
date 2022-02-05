@@ -26,19 +26,19 @@ different random partitions of the data into training and testing sets using
 
 ## Model Performance
 
-```{r perf_plot, out.width='60%'}
+```{r perf_plot, out.width='50%'}
 include_graphics(snakemake@input[['perf_plot']])
 ```
 
 ## Hyperparameter Performance
 
-```{r hp-plot, out.width='60%'}
+```{r hp-plot, out.width='50%'}
 include_graphics(snakemake@input[['hp_plot']])
 ```
 
 ## Memory Usage & Runtime
 
-```{r runtime-plot, out.width='60%'}
+```{r runtime-plot, out.width='50%'}
 include_graphics(snakemake@input[['bench_plot']])
 ```
 
@@ -68,7 +68,7 @@ feats <- dat %>%
     arrange(-mean_diff)
 ```
 
-```{r plot-feats-histograms, message = FALSE}
+```{r plot-feats-histograms, message = FALSE, out.width = '50%'}
 feats %>%
     ggplot(aes(frac_sig)) +
     geom_histogram()
@@ -82,7 +82,7 @@ feats %>%
 
 ### Performance differences
 
-```{r feat-imp-plot}
+```{r feat-imp-plot, out.width='50%'}
 include_graphics(snakemake@input[['feat_plot']])
 ```
 
