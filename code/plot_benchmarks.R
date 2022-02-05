@@ -30,4 +30,5 @@ bench_plot <- dat %>%
   theme_classic() +
   labs(y = "", x = "") +
   coord_flip()
-ggsave(snakemake@output[["plot"]], plot = bench_plot)
+ggsave(snakemake@output[["plot"]], plot = bench_plot,
+       height = 4, width = 4, units = 'in')
