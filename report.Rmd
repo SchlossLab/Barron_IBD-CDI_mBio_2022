@@ -1,5 +1,5 @@
 ---
-title: "ML Results"
+title: "Exploratory Report"
 date: "`r Sys.Date()`"
 output:
   github_document:

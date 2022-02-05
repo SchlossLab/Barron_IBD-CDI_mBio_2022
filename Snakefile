@@ -14,7 +14,9 @@ seeds = range(start_seed, start_seed + nseeds)
 
 rule targets:
     input:
-        'report.md'
+        'report.md',
+        'docs/ml-sections.pdf',
+        'docs/ml-sections.html'
 
 rule join_metadata:
     input:
@@ -186,6 +188,21 @@ rule render_report:
         kfold=kfold
     script:
         'code/render.R'
+
+rule render_writeup:
+    input:
+        Rmd='paper/ml-sections.Rmd'
+    output:
+        'docs/ml-sections.html',
+        'docs/ml-sections.pdf'
+    shell:
+        """
+        R -e 'rmarkdown::render("{input.Rmd}", 
+                                 output_format = "all",
+                                 output_dir = "docs/"
+                                 )'
+        """
+
 
 rule clean:
     input:

@@ -1,0 +1,58 @@
+---
+date: '`r Sys.Date()`'
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: false
+    includes:
+      in_header: preamble.tex
+  html_document:
+    theme: paper
+fontsize: 12pt
+geometry: margin=1.0in
+bibliography: references.bib
+csl: msphere.csl
+---
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
+schtools::set_knitr_opts()
+knitr::opts_chunk$set(message = FALSE,
+                      fig.path = 'figures/',
+                      dpi = 300
+                      )
+```
+
+```{r deps}
+library(here)
+library(knitr)
+library(tidyverse)
+```
+
+```{r data}
+perf_dat <- read_csv(here('results','performance_results.csv'))
+mean_auroc <- perf_dat %>% pull(AUC) %>% mean()
+sd_auroc <- perf_dat %>% pull(AUC) %>% sd()
+mean_auprc <- perf_dat %>% pull(prAUC) %>% mean()
+sd_auprc <- perf_dat %>% pull(prAUC) %>% sd()
+```
+
+## Machine Learning Results
+
+performance measured by the area under the receiver-operator characteristic curve (AUROC) and the area under the precision-recall curve (AUPRC).
+
+Mean AUROC `r mean_auroc` (s.d. `r sd_auroc`)
+
+Mean AUPRC `r mean_auprc` (s.d. `r sd_auprc`)
+
+TODO feature importance
+
+### Figure 5
+
+TODO caption
+
+## Machine Learning Methods
+
+TODO describe pipeline [@topcuoglu_framework_2020]
+
+mikropml version 1.2.1 [@topcuoglu_mikropml_2021]]
+
+## References
