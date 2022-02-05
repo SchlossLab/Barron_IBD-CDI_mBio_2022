@@ -59,7 +59,7 @@ TODO feature importance
 
 TODO caption
 
-## Machine Learning Methods
+## Machine learning methods
 
 TODO describe pipeline [@topcuoglu_framework_2020]
 
