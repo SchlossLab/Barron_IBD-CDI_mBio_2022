@@ -126,7 +126,7 @@ rule plot_performance:
         R="code/plot_perf.R",
         csv='results/performance_results.csv'
     output:
-        plot='figures/performance_box.tiff'
+        plot='figures/performance_box.png'
     log:
         "log/plot_performance.txt"
     script:
@@ -137,7 +137,7 @@ rule plot_feature_importance:
         R='code/plot_feature-importance.R',
         csv='results/feature-importance_results.csv'
     output:
-        plot='figures/feature-importance.tiff'
+        plot='figures/feature-importance.png'
     log: "log/plot_feature-importance.txt"
     script:
         'code/plot_feature-importance.R'

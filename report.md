@@ -8,7 +8,7 @@ sets using 5-fold cross validation.
 
 ## Model Performance
 
-<img src="figures/performance_box.tiff" width="60%" />
+<img src="figures/performance_box.png" width="60%" />
 
 ## Hyperparameter Performance
 
@@ -26,4 +26,4 @@ Each model training run was given 12 cores for parallelization.
 
 ### Performance differences
 
-![](figures/feature-importance.tiff)<!-- -->
+![](figures/feature-importance.png)<!-- -->
