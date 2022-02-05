@@ -16,5 +16,6 @@ dependencies:
   - r-mikropml>=1.2.1
   - r-rmarkdown
   - r-rpart
+  - r-schtools
   - r-tidyverse
   - snakemake
