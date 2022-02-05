@@ -45,4 +45,4 @@ feat_imp_plot <- top_feats %>%
           plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
 
 ggsave(filename = snakemake@output[['plot']], plot = feat_imp_plot,
-       device = 'png', dpi = 200, units = 'in', width = 4, height = 6)
+       device = 'png', dpi = 200, units = 'in', width = 4, height = 5)
