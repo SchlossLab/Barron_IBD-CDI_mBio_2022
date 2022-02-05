@@ -24,4 +24,6 @@ Each model training run was given 12 cores for parallelization.
 
 ![](figures/plot-feats-histograms-1.png)<!-- -->![](figures/plot-feats-histograms-2.png)<!-- -->![](figures/plot-feats-histograms-3.png)<!-- -->
 
+### Performance differences
+
 ![](figures/feature-importance.tiff)<!-- -->

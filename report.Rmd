@@ -46,6 +46,7 @@ Each model training run was given `r snakemake@params[['ncores']]` cores
 for parallelization.
 
 ## Feature Importance
+
 ```{r load-feat-imp, message=FALSE}
 alpha_level <- 0.05
 dat <- read_csv(here('results', 'feature-importance_results.csv')) %>%
@@ -78,6 +79,8 @@ feats %>%
     ggplot(aes(frac_sig, mean_diff)) +
     geom_point(alpha = 0.5)
 ```
+
+### Performance differences
 
 ```{r feat-imp-plot}
 include_graphics(snakemake@input[['feat_plot']])
