@@ -4,13 +4,17 @@ library(tidyverse)
 perf_plot <- snakemake@input[["csv"]] %>%
   read_csv() %>%
     select(cv_metric_AUC, AUC, prAUC, groups, train_frac) %>%
-    rename(`cv AUROC` = cv_metric_AUC,
+    rename(`train AUROC` = cv_metric_AUC,
            `test AUROC` = AUC,
-           `test PRAUC` = prAUC) %>%
+           `test AUPRC` = prAUC) %>%
     pivot_longer(-c(groups, train_frac), names_to = 'metric') %>%
-    ggplot(aes(x = groups, y = value, color = metric)) +
-    facet_wrap('train_frac') +
+    mutate(metric = factor(metric,
+                           levels = c("test AUPRC", "test AUROC", "train AUROC"))) %>%
+    ggplot(aes(x = value, y = metric)) +
+    geom_vline(xintercept = 0.5, linetype = 'dashed') +
     geom_boxplot() +
-    scale_color_brewer(palette = "Dark2") +
+    xlim(0.5, 1) +
+    labs(x='Performance', y='') +
     theme_bw()
-ggsave(snakemake@output[["plot"]], plot = perf_plot)
+ggsave(snakemake@output[["plot"]], plot = perf_plot,
+       device = 'tiff', dpi=300, units = 'in', width = 4, height = 4)
