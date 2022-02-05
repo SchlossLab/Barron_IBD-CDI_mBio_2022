@@ -3,7 +3,7 @@ library(here)
 library(tidyverse)
 
 alpha_level <- 0.05
-feat_dat <- read_csv(here('results', 'feature-importance_results.csv')) %>%
+feat_dat <- read_csv(snakemake@input[['csv']]) %>%
     rename(feature = names)
 
 nseeds <- feat_dat %>% pull(seed) %>% unique() %>% length()
@@ -38,9 +38,11 @@ feat_imp_plot <- top_feats %>%
     geom_vline(xintercept = 0, linetype = 'dashed') +
     geom_pointrange(aes(xmin = mean_diff - sd_diff, xmax = mean_diff + sd_diff)) +
     scale_color_continuous(type = 'viridis', name = '% models') +
-    xlim(-0.01, 0.005) +
     labs(y = '', x = 'Mean difference in AUROC') +
-    theme_bw()
+    theme_bw() +
+    theme(legend.position = 'bottom',
+          legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
+          plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
 
-ggsave(filename = here('figures', 'feature-importance.png'),
-       plot = feat_imp_plot)
+ggsave(filename = snakemake@output[['plot']], plot = feat_imp_plot,
+       device = 'tiff', dpi = 300, units = 'in', width = 4, height = 6)

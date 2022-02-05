@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.path = 'figures/')
 ```
 
-```{r deps}
+```{r deps, message = FALSE}
 library(knitr)
 library(here)
 library(tidyverse)
@@ -46,7 +46,7 @@ Each model training run was given `r snakemake@params[['ncores']]` cores
 for parallelization.
 
 ## Feature Importance
-```{r load-feat-imp}
+```{r load-feat-imp, message=FALSE}
 alpha_level <- 0.05
 dat <- read_csv(here('results', 'feature-importance_results.csv')) %>%
     rename(feature = names)

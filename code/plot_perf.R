@@ -15,6 +15,7 @@ perf_plot <- snakemake@input[["csv"]] %>%
     geom_boxplot() +
     xlim(0.5, 1) +
     labs(x='Performance', y='') +
-    theme_bw()
+    theme_bw() +
+    theme(plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
 ggsave(snakemake@output[["plot"]], plot = perf_plot,
        device = 'tiff', dpi=300, units = 'in', width = 4, height = 4)
