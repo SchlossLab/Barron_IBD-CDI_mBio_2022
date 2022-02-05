@@ -26,7 +26,7 @@ dat <- read_csv(snakemake@input[['csv']],
 bench_plot <- dat %>%
   ggplot(aes(groups_colname, value)) +
   geom_boxplot() +
-  facet_wrap(metric ~ ., scales = 'free') +
+  facet_wrap(metric ~ ., scales = 'free', ncol = 1) +
   theme_classic() +
   labs(y = "", x = "") +
   coord_flip()
