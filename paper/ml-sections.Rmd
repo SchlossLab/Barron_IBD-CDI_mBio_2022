@@ -35,7 +35,17 @@ mean_auprc <- perf_dat %>% pull(prAUC) %>% mean()
 sd_auprc <- perf_dat %>% pull(prAUC) %>% sd()
 ```
 
-## Machine Learning Results
+## Machine learning prediction of _C. difficile_ colonization based on microbiota composition on day of challenge  
+
+- We now see that microbiota are sufficient for colonization susceptibility/resistance
+- Some taxa are suggestive of being protective vs unprotective (they have cropped up multiple times; think Lachno and Porphyro vs Entero and Lacto) 
+- Goal for this section: Generate a model through which to predict susceptibility based on microbiota 
+- Samples:
+    - 16S sequences from all experiments. 
+    - Determine whether susceptible based on who was colonized at any point throughout experiment
+        - Random Forest 
+        - Taxa that were predictive 
+- This is a hypothesis generating step to computationally identify relevant taxa to advance future biological/mechanistic investigations. 
 
 performance measured by the area under the receiver-operator characteristic curve (AUROC) and the area under the precision-recall curve (AUPRC).
 
@@ -53,6 +63,8 @@ TODO caption
 
 TODO describe pipeline [@topcuoglu_framework_2020]
 
-mikropml version 1.2.1 [@topcuoglu_mikropml_2021]]
+mikropml version 1.2.1 [@topcuoglu_mikropml_2021]
+
+The workflow used to perform the machine learning analysis is available at https://github.com/SchlossLab/Barron_IBD-CDI_2022
 
 ## References

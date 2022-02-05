@@ -409,8 +409,31 @@ pre code {
 </div>
 
 
-<div id="machine-learning-results" class="section level2">
-<h2>Machine Learning Results</h2>
+<div id="machine-learning-prediction-of-c.-difficile-colonization-based-on-microbiota-composition-on-day-of-challenge" class="section level2">
+<h2>Machine learning prediction of <em>C. difficile</em> colonization
+based on microbiota composition on day of challenge</h2>
+<ul>
+<li>We now see that microbiota are sufficient for colonization
+susceptibility/resistance</li>
+<li>Some taxa are suggestive of being protective vs unprotective (they
+have cropped up multiple times; think Lachno and Porphyro vs Entero and
+Lacto)</li>
+<li>Goal for this section: Generate a model through which to predict
+susceptibility based on microbiota</li>
+<li>Samples:
+<ul>
+<li>16S sequences from all experiments.</li>
+<li>Determine whether susceptible based on who was colonized at any
+point throughout experiment
+<ul>
+<li>Random Forest</li>
+<li>Taxa that were predictive</li>
+</ul></li>
+</ul></li>
+<li>This is a hypothesis generating step to computationally identify
+relevant taxa to advance future biological/mechanistic
+investigations.</li>
+</ul>
 <p>performance measured by the area under the receiver-operator
 characteristic curve (AUROC) and the area under the precision-recall
 curve (AUPRC).</p>
@@ -425,7 +448,9 @@ curve (AUPRC).</p>
 <div id="machine-learning-methods" class="section level2">
 <h2>Machine Learning Methods</h2>
 <p>TODO describe pipeline <span class="citation">(1)</span></p>
-<p>mikropml version 1.2.1 <span class="citation">(2)</span>]</p>
+<p>mikropml version 1.2.1 <span class="citation">(2)</span></p>
+<p>The workflow used to perform the machine learning analysis is
+available at <a href="https://github.com/SchlossLab/Barron_IBD-CDI_2022" class="uri">https://github.com/SchlossLab/Barron_IBD-CDI_2022</a></p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="unnumbered">References</h2>
