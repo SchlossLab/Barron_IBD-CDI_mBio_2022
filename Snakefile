@@ -71,18 +71,18 @@ rule predict:
         model=rules.run_ml.output.model,
         test=rules.run_ml.output.test
     output:
-        csv="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_predictions.csv"
+        csv="results/runs/group-{group_colname}/trainfrac-{train_frac}/{method}_{seed}_sensspec.csv"
     script:
         'code/predict.R'
 
-rule calc_sensspec:
+rule combine_sensspec:
     input:
-        R='code/calc_sensspec.R',
+        R='code/bind_rows.R',
         csv=expand("results/runs/group-{{group_colname}}/trainfrac-{{train_frac}}/{{method}}_{seed}_predictions.csv", seed = seeds)
     output:
         csv="results/group-{{group_colname}}/trainfrac-{{train_frac}}/{{method}}_sensspec.csv"
     script:
-        'code/calc_sensspec.R'
+        'code/bind_rows.R'
 
 rule combine_results:
     input:
@@ -133,6 +133,15 @@ rule plot_performance:
         "log/plot_performance.txt"
     script:
         "code/plot_perf.R"
+
+rule plot_roc_curves:
+    input:
+        R="code/plot_roc.R",
+        csv=rules.combine_sensspec.output.csv
+    output:
+        plot="figures/group-{{group_colname}}_trainfrac-{{train_frac}}_{{method}}_ROC-curves.png"
+    script:
+        "code/plot_roc.R"
 
 rule plot_feature_importance:
     input:
