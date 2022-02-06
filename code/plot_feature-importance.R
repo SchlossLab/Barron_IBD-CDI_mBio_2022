@@ -30,7 +30,7 @@ feats <- feat_dat %>%
 
 top_feats <- feats %>%
     slice_max(n = 20, order_by = mean_diff) %>%
-    mutate(feature = fct_reorder(as.factor(feature), -mean_diff))
+    mutate(feature = fct_reorder(as.factor(feature), mean_diff))
 
 feat_imp_plot <- top_feats %>%
     mutate(percent_models_signif = frac_sig * 100) %>%
