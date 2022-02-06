@@ -1,4 +1,3 @@
-source('code/log_smk.R')
 library(tidyverse)
 
 model <- read_rds(snakemake@input[['model']])
