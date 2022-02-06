@@ -1,4 +1,5 @@
 library(tidyverse)
+library(patchwork)
 blues <- RColorBrewer::brewer.pal(name='Blues', n = 9)
 greens <- RColorBrewer::brewer.pal(name='Greens', n = 9)
 
@@ -40,7 +41,8 @@ auroc <- dat %>%
     labs(x = 'Specificity', y = 'Sensitivity') +
     guides(color = guide_legend(nrow = 1,title=""),
            fill = guide_legend(nrow = 1,title="")) +
-    theme_bw() #+theme(plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
+    theme_bw() +
+    theme(plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
 
 # precision vs recall
 auprc <- dat %>%
@@ -68,7 +70,9 @@ auprc <- dat %>%
     labs(x = 'Recall', y = 'Precision') +
     guides(color = guide_legend(nrow = 1,title=""),
            fill = guide_legend(nrow = 1,title="")) +
-    theme_bw() #+theme(plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
+    theme_bw() +
+    theme(plot.margin = unit(x = c(0, 0, 0, 7), units = "pt"))
 
-auc_plots <- cowplot::plot_grid(auroc, auprc)
-ggsave(plot = auc_plots, filename = snakemake@output[['plot']])
+auc_plots <- auroc + auprc
+ggsave(plot = auc_plots, filename = snakemake@output[['plot']],
+       dpi = 200, units = 'in', width = 6, height = 5)
