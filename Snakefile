@@ -186,7 +186,7 @@ rule render_report:
                        group_colname = groups,
                        train_frac = training_fracs),
         bench_plot=rules.plot_benchmarks.output.plot,
-        roc_plot=expand(rules.plot_roc_curves.output.plot, 
+        roc_plots=expand(rules.plot_roc_curves.output.plot, 
                          method = ml_methods, 
                          group_colname = groups,
                          train_frac = training_fracs)

@@ -12,6 +12,7 @@ fontsize: 12pt
 geometry: margin=1.0in
 bibliography: references.bib
 csl: msphere.csl
+link-citations: true
 ---
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
