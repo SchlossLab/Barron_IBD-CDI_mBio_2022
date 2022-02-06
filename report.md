@@ -9,6 +9,7 @@ sets using 5-fold cross validation.
 ## Model Performance
 
 <img src="figures/performance_box.png" width="50%" />
+<img src="figures/group-experiment_trainfrac-0.65_rf_ROC-curves.png" width="80%" />
 
 ## Hyperparameter Performance
 
