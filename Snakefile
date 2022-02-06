@@ -78,9 +78,9 @@ rule predict:
 rule combine_sensspec:
     input:
         R='code/bind_rows.R',
-        csv=expand("results/runs/group-{{group_colname}}/trainfrac-{{train_frac}}/{{method}}_{seed}_predictions.csv", seed = seeds)
+        csv=expand("results/runs/group-{{group_colname}}/trainfrac-{{train_frac}}/{{method}}_{seed}_sensspec.csv", seed = seeds)
     output:
-        csv="results/group-{{group_colname}}/trainfrac-{{train_frac}}/{{method}}_sensspec.csv"
+        csv="results/group-{group_colname}/trainfrac-{train_frac}/{method}_sensspec.csv"
     script:
         'code/bind_rows.R'
 
@@ -139,7 +139,7 @@ rule plot_roc_curves:
         R="code/plot_roc.R",
         csv=rules.combine_sensspec.output.csv
     output:
-        plot="figures/group-{{group_colname}}_trainfrac-{{train_frac}}_{{method}}_ROC-curves.png"
+        plot="figures/group-{group_colname}_trainfrac-{train_frac}_{method}_ROC-curves.png"
     script:
         "code/plot_roc.R"
 
@@ -185,7 +185,11 @@ rule render_report:
                        method = ml_methods, 
                        group_colname = groups,
                        train_frac = training_fracs),
-        bench_plot=rules.plot_benchmarks.output.plot
+        bench_plot=rules.plot_benchmarks.output.plot,
+        roc_plot=expand(rules.plot_roc_curves.output.plot, 
+                         method = ml_methods, 
+                         group_colname = groups,
+                         train_frac = training_fracs)
     output:
         doc='report.md'
     log:
