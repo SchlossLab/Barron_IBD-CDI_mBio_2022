@@ -66,7 +66,7 @@ auprc <- dat %>%
     coord_equal() +
     geom_abline(intercept = 1, slope = 1, linetype="dashed", color="grey50") +
     scale_y_continuous(expand = c(0,0), limits = c(-0.01,1.01)) +
-    scale_x_reverse(expand = c(0,0), limits = c(1.01,-0.01)) +
+    scale_x_continuous(expand = c(0,0), limits = c(-0.01,1.01)) +
     labs(x = 'Recall', y = 'Precision') +
     guides(color = guide_legend(nrow = 1,title=""),
            fill = guide_legend(nrow = 1,title="")) +
