@@ -29,6 +29,9 @@ different random partitions of the data into training and testing sets using
 ```{r perf_plot, out.width='50%'}
 include_graphics(snakemake@input[['perf_plot']])
 ```
+
+### AUROC & AUPRC Curves
+
 ```{r roc_plots, out.width='80%'}
 include_graphics(snakemake@input[['roc_plots']])
 ```
