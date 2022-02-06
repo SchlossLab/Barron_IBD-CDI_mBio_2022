@@ -24,12 +24,12 @@ feats <- feat_dat %>%
               sd_diff = sd(perf_metric_diff),
               lowerq = quantile(perf_metric_diff)[2],
               upperq = quantile(perf_metric_diff)[4]) %>%
-    filter(mean_diff < 0) %>%
+    filter(mean_diff > 0) %>%
     inner_join(signif_feats, by = 'feature') %>%
     arrange(mean_diff)
 
 top_feats <- feats %>%
-    slice_min(n = 20, order_by = mean_diff) %>%
+    slice_max(n = 20, order_by = mean_diff) %>%
     mutate(feature = fct_reorder(as.factor(feature), -mean_diff))
 
 feat_imp_plot <- top_feats %>%
