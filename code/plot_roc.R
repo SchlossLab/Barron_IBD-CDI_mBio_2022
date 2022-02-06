@@ -70,5 +70,5 @@ auprc <- dat %>%
            fill = guide_legend(nrow = 1,title="")) +
     theme_bw() #+theme(plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
 
-cowplot::plot_grid(auroc, auprc) %>%
-    ggsave(snakemake@output[['plot']])
+auc_plots <- cowplot::plot_grid(auroc, auprc)
+ggsave(plot = auc_plots, filename = snakemake@output[['plot']])
