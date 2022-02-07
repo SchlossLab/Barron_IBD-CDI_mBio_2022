@@ -3,7 +3,7 @@ ml_methods:
  - rf
 kfold: 5
 ncores: 12
-nseeds: 10
+nseeds: 100
 groups:
 - exp_id_number
 test_groups:
