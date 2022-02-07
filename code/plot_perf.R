@@ -1,16 +1,15 @@
 source("code/log_smk.R")
 library(tidyverse)
-
-perf_plot <- snakemake@input[["csv"]] %>%
-  read_csv() %>%
-    select(cv_metric_AUC, AUC, prAUC, groups, train_frac) %>%
+perf_dat <- read_csv(snakemake@input[["csv"]])
+perf_plot <- perf_dat %>%
     rename(`train AUROC` = cv_metric_AUC,
            `test AUROC` = AUC,
            `test AUPRC` = prAUC) %>%
-    pivot_longer(-c(groups, train_frac), names_to = 'metric') %>%
+    pivot_longer(c(`train AUROC`, `test AUROC`, `test AUPRC`),
+                 names_to = 'metric') %>%
     mutate(metric = factor(metric,
                            levels = c("test AUPRC", "test AUROC", "train AUROC"))) %>%
-    ggplot(aes(x = value, y = metric)) +
+    ggplot(aes(x = value, y = metric, color = test_group)) +
     geom_vline(xintercept = 0.5, linetype = 'dashed') +
     geom_boxplot() +
     xlim(0.5, 1) +
