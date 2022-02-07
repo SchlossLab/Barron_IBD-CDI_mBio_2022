@@ -5,7 +5,7 @@ library(tidyverse)
 alpha_level <- 0.05
 feat_dat <- read_csv('results/feature-importance_results.csv') %>%
     rename(otu = names)
-tax_dat <- schtools::read_tax('data/raw/final.taxonomy.csv') %>%
+tax_dat <- schtools::read_tax('data/processed/final.taxonomy.tsv') %>%
     rename(otu = OTU) %>%
     mutate(label = str_replace(tax_otu_label, '(^\\w+) (.*)', '_\\1_ \\2'))
 
