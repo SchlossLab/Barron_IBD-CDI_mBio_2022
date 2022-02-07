@@ -3,8 +3,14 @@ ml_methods:
  - rf
 kfold: 5
 ncores: 12
-nseeds: 100
+nseeds: 10
 groups:
-- experiment
+- exp_id_number
+test_groups:
+- fmt_1
+- fmt_2
+- p40_1
+- p40_2
+- p40_3
 training_fracs:
 - 0.65

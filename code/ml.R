@@ -9,6 +9,7 @@ train_frac <- as.numeric(snakemake@wildcards[['train_frac']])
 data_processed <- readRDS(snakemake@input[["rds"]])$dat_transformed
 groups_vctr <- readxl::read_excel(snakemake@input[['meta']]) %>%
     pull(group_colname)
+test_group <- snakemake@wildcards[['test_group']]
 
 ml_results <- mikropml::run_ml(
   dataset = data_processed,
@@ -18,6 +19,7 @@ ml_results <- mikropml::run_ml(
   kfold = as.numeric(snakemake@params[['kfold']]),
   seed = as.numeric(snakemake@wildcards[["seed"]]),
   groups = groups_vctr,
+  group_partitions = list(test = c(test_group)),
   training_frac = train_frac
 )
 
@@ -25,9 +27,11 @@ saveRDS(ml_results$trained_model, file = snakemake@output[["model"]])
 readr::write_csv(ml_results$test_data, snakemake@output[['test']])
 readr::write_csv(ml_results$performance %>%
                      mutate(groups = group_colname,
+                            test_group = test_group,
                             train_frac = train_frac),
                  snakemake@output[["perf"]])
 readr::write_csv(ml_results$feature_importance %>%
                      mutate(groups = group_colname,
+                            test_group = test_group,
                             train_frac = train_frac),
                  snakemake@output[["feat"]])
