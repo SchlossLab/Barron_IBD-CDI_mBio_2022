@@ -10,7 +10,7 @@ sets using 5-fold cross validation.
 
 <img src="figures/performance_box.png" width="50%" />
 
-### AUROC & AUPRC Curves
+### ROC & PRC Curves
 
 <img src="figures/ROC-PRC-curves.png" width="80%" />
 
