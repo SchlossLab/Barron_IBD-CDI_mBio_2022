@@ -3,10 +3,11 @@ ml_methods:
  - rf
 kfold: 5
 ncores: 12
-nseeds: 1
+nseeds: 2
 groups:
 - exp_id_number
 test_groups:
 - fmt_1
+- fmt_2
 training_fracs:
 - 0.65
