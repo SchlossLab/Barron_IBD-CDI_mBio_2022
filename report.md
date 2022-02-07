@@ -3,7 +3,7 @@ Exploratory Report
 2022-02-07
 
 Machine learning algorithms used include: rf. Models were trained with
-100 different random partitions of the data into training and testing
+10 different random partitions of the data into training and testing
 sets using 5-fold cross validation.
 
 ## Model Performance
@@ -12,11 +12,11 @@ sets using 5-fold cross validation.
 
 ### AUROC & AUPRC Curves
 
-<img src="figures/group-experiment_trainfrac-0.65_rf_ROC-curves.png" width="80%" />
+<img src="figures/ROC-PRC-curves.png" width="80%" />
 
 ## Hyperparameter Performance
 
-<img src="figures/group-experiment/trainfrac-0.65/hp_performance_rf.png" width="50%" />
+<img src="figures/group-exp_id_number/trainfrac-0.65/hp_performance_rf_testgroup-fmt_1.png" width="50%" /><img src="figures/group-exp_id_number/trainfrac-0.65/hp_performance_rf_testgroup-fmt_2.png" width="50%" /><img src="figures/group-exp_id_number/trainfrac-0.65/hp_performance_rf_testgroup-p40_1.png" width="50%" /><img src="figures/group-exp_id_number/trainfrac-0.65/hp_performance_rf_testgroup-p40_2.png" width="50%" /><img src="figures/group-exp_id_number/trainfrac-0.65/hp_performance_rf_testgroup-p40_3.png" width="50%" />
 
 ## Memory Usage & Runtime
 
