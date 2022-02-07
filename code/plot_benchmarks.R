@@ -1,7 +1,7 @@
 source("code/log_smk.R")
 library(tidyverse)
 
-dat <- read_csv('results/benchmarks_results.csv',#snakemake@input[['csv']],
+dat <- read_csv(snakemake@input[['csv']],
                 col_types = cols(
                   s = col_double(),
                   `h:m:s` = col_time(format = "%H:%M:%S"),
@@ -15,14 +15,11 @@ dat <- read_csv('results/benchmarks_results.csv',#snakemake@input[['csv']],
                   cpu_time = col_double(),
                   method = col_character(),
                   seed = col_double(),
-                  groups_colanme = col_character(),
-                  test_group = col_character()
+                  groups_colanme = col_character()
                 )) %>%
   mutate(runtime_mins = s / 60,
          memory_gb = max_rss / 1024) %>%
-  select(groups_colname, runtime_mins, memory_gb) %>%
-  pivot_longer(-groups_colname, names_to = 'metric') %>%
-  group_by(groups_colname, test_group)
+  pivot_longer(c(runtime_mins, memory_gb), names_to = 'metric')
 
 bench_plot <- dat %>%
   ggplot(aes(groups_colname, value, color = test_group)) +
