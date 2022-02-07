@@ -3,11 +3,10 @@ library(patchwork)
 blues <- RColorBrewer::brewer.pal(name='Blues', n = 9)
 greens <- RColorBrewer::brewer.pal(name='Greens', n = 9)
 
-dat <- read_csv(snakemake@input[['csv']]) %>%
-    mutate(seed = as.character(seed))
+sens_dat <- read_csv(snakemake@input[['csv']])
 
-auroc_step <- dat %>%
-  ggplot(aes(x = fpr,y = sensitivity, color = seed)) +
+auroc_step <- sens_dat %>%
+  ggplot(aes(x = fpr,y = sensitivity, color = test_group)) +
   geom_step() +
   theme_bw() +
   labs(x="False Positive Rate",
@@ -17,7 +16,7 @@ auroc_step <- dat %>%
   theme(legend.position = 'none')
 
 # sensitivity vs specificity
-auroc <- dat %>%
+auroc <- sens_dat %>%
     mutate(specificity = round(specificity, 2)) %>%
     group_by(specificity) %>%
     summarise(mean_sensitivity = mean(sensitivity),
@@ -45,7 +44,7 @@ auroc <- dat %>%
     theme(plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
 
 # precision vs recall
-auprc <- dat %>%
+auprc <- sens_dat %>%
     rename(recall = sensitivity) %>%
     mutate(recall = round(recall, 2)) %>%
     group_by(recall) %>%

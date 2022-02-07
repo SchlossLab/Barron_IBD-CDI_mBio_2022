@@ -29,5 +29,6 @@ get_senspec(probs) %>%
     mutate(seed = snakemake@wildcards[['seed']],
            ml_method = snakemake@wildcards[['ml_method']],
            groups = snakemake@wildcards[['group_colname']],
-           train_frac = snakemake@wildcards[['train_frac']]) %>%
+           train_frac = snakemake@wildcards[['train_frac']],
+           test_group = snakemake@wildcards[['test_group']]) %>%
     write_csv(snakemake@output[['csv']])
