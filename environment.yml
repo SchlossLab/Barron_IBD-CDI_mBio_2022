@@ -12,6 +12,7 @@ dependencies:
   - r-foreach
   - r-future
   - r-future.apply
+  - r-ggtext
   - r-here
   - r-mikropml>=1.2.1
   - r-patchwork
