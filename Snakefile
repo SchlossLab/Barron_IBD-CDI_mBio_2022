@@ -28,6 +28,18 @@ rule join_metadata:
     script:
         'code/join_metadata.R'
 
+rule csv2tsv:
+    input:
+        csv='data/raw/final.taxonomy.csv'
+    output:
+        tsv='data/processed/final.taxonomy.tsv'
+    shell:
+        """
+        R -e 'library(tidyverse)
+              read_csv("{input.csv}") %>% write_tsv("{output.tsv}")
+             '
+        """
+
 rule preprocess_data:
     input:
         R="code/preproc.R",
@@ -146,7 +158,8 @@ rule plot_roc_curves:
 rule plot_feature_importance:
     input:
         R='code/plot_feature-importance.R',
-        csv='results/feature-importance_results.csv'
+        feat='results/feature-importance_results.csv',
+        tax='data/processed/final.taxonomy.tsv'
     output:
         plot='figures/feature-importance.png'
     log: "log/plot_feature-importance.txt"
@@ -181,13 +194,13 @@ rule render_report:
         R='code/render.R',
         perf_plot=rules.plot_performance.output.plot,
         feat_plot=rules.plot_feature_importance.output.plot,
-        hp_plot=expand(rules.plot_hp_performance.output.plot, 
-                       method = ml_methods, 
+        hp_plot=expand(rules.plot_hp_performance.output.plot,
+                       method = ml_methods,
                        group_colname = groups,
                        train_frac = training_fracs),
         bench_plot=rules.plot_benchmarks.output.plot,
-        roc_plots=expand(rules.plot_roc_curves.output.plot, 
-                         method = ml_methods, 
+        roc_plots=expand(rules.plot_roc_curves.output.plot,
+                         method = ml_methods,
                          group_colname = groups,
                          train_frac = training_fracs)
     output:
@@ -210,7 +223,7 @@ rule render_writeup:
         'docs/ml-sections.pdf'
     shell:
         """
-        R -e 'rmarkdown::render("{input.Rmd}", 
+        R -e 'rmarkdown::render("{input.Rmd}",
                                  output_format = "all",
                                  output_dir = "docs/"
                                  )'
