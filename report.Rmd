@@ -30,7 +30,7 @@ different random partitions of the data into training and testing sets using
 include_graphics(snakemake@input[['perf_plot']])
 ```
 
-### AUROC & AUPRC Curves
+### ROC & PRC Curves
 
 ```{r roc_plots, out.width='80%'}
 include_graphics(snakemake@input[['roc_plots']])
@@ -59,11 +59,12 @@ dat <- read_csv(here('results', 'feature-importance_results.csv')) %>%
     rename(feature = names)
 
 nseeds <- dat %>% pull(seed) %>% unique() %>% length()
+ngroups <- dat %>% pull(test_group) %>% unique() %>% length()
 
 signif_feats <- dat %>%
     filter(pvalue < alpha_level) %>%
     group_by(feature) %>%
-    summarize(frac_sig = n() / nseeds)
+    summarize(frac_sig = n() / (nseeds * ngroups))
 
 feats <- dat %>%
     group_by(feature) %>%
