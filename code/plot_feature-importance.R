@@ -10,15 +10,15 @@ tax_dat <- schtools::read_tax('data/processed/final.taxonomy.tsv') %>%
     mutate(label = str_replace(tax_otu_label, '(^\\w+) (.*)', '_\\1_ \\2'))
 
 nseeds <- feat_dat %>% pull(seed) %>% unique() %>% length()
+ngroups <- feat_dat %>% pull(test_group) %>% unique() %>% length()
 
 signif_feats <- feat_dat %>%
     filter(pvalue < alpha_level) %>%
-    group_by(otu) %>%
-    summarize(frac_sig = n() / nseeds) %>% filter(frac_sig > 0.4)
+    group_by(otu, test_group) %>%
+    summarize(frac_sig = n() / nseeds)# %>% filter(frac_sig > 0.4)
 
 feats <- feat_dat %>%
-    filter(otu %in% signif_feats$otu) %>%
-    group_by(otu) %>%
+    group_by(otu, test_group) %>%
     summarise(mean_auroc = mean(perf_metric),
               sd_auroc = sd(perf_metric),
               mean_diff = mean(perf_metric_diff),
@@ -26,19 +26,26 @@ feats <- feat_dat %>%
               sd_diff = sd(perf_metric_diff),
               lowerq = quantile(perf_metric_diff)[2],
               upperq = quantile(perf_metric_diff)[4]) %>%
-    inner_join(signif_feats, by = 'otu') %>%
+    inner_join(signif_feats, by = c('otu', 'test_group')) %>%
     left_join(tax_dat %>% select(otu, label), by = 'otu') %>%
+    ungroup() %>%
     arrange(mean_diff)
 
-top_feats <- feats %>%
+top_20 <- feats %>%
+    filter(frac_sig > 0.5, mean_diff > 0) %>%
     slice_max(n = 20, order_by = mean_diff) %>%
-    mutate(label = fct_reorder(as.factor(label), mean_diff),
-           percent_models_signif = frac_sig * 100)
+    pull(otu)
 
-feat_imp_plot <- top_feats %>%
-    ggplot(aes(x = -mean_diff, y = label, color = percent_models_signif)) +
+feat_imp_plot <- feats %>%
+    filter(otu %in% top_20) %>%
+    mutate(label = fct_reorder(as.factor(label), mean_diff),
+           percent_models_signif = frac_sig * 100) %>%
+    ggplot(aes(x = -mean_diff, y = label,
+               color = percent_models_signif, shape = test_group)) +
     geom_vline(xintercept = 0, linetype = 'dashed') +
-    geom_pointrange(aes(xmin = -mean_diff - sd_diff, xmax = -mean_diff + sd_diff)) +
+    geom_pointrange(aes(xmin = -mean_diff - sd_diff,
+                        xmax = -mean_diff + sd_diff)) +
+    facet_wrap('test_group', nrow = 1)+#, scales = 'free_y') +
     scale_color_continuous(type = 'viridis', name = '% models') +
     labs(y = '', x = 'Mean decrease in AUROC') +
     theme_bw() +
@@ -48,4 +55,4 @@ feat_imp_plot <- top_feats %>%
           plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
 
 ggsave(filename = snakemake@output[['plot']], plot = feat_imp_plot,
-       device = 'png', dpi = 200, units = 'in', width = 5, height = 5)
+       device = 'png', dpi = 200, units = 'in', width = 9, height = 5)
