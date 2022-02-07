@@ -3,7 +3,7 @@ Exploratory Report
 2022-02-07
 
 Machine learning algorithms used include: rf. Models were trained with
-10 different random partitions of the data into training and testing
+100 different random partitions of the data into training and testing
 sets using 5-fold cross validation.
 
 ## Model Performance
