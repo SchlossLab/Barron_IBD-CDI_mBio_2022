@@ -22,7 +22,7 @@ dat <- read_csv(snakemake@input[['csv']],
   pivot_longer(c(runtime_mins, memory_gb), names_to = 'metric')
 
 bench_plot <- dat %>%
-  ggplot(aes(groups_colname, value, color = test_group)) +
+  ggplot(aes(groups_colname, value)) +
   geom_boxplot() +
   facet_wrap(metric ~ ., scales = 'free', ncol = 1) +
   theme_classic() +
