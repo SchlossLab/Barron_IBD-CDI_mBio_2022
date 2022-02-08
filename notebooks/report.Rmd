@@ -2,14 +2,17 @@
 title: "Exploratory Report"
 date: "`r Sys.Date()`"
 output:
-  github_document:
-    html_preview: false
+  html_document:
+    keep_md: false
+    theme: paper
+    self-contained: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       eval = TRUE,
-                      fig.path = 'figures/')
+                      fig.path = here::here('figures/')
+                      )
 ```
 
 ```{r deps, message = FALSE}
@@ -27,25 +30,19 @@ different random partitions of the data into training and testing sets using
 ## Model Performance
 
 ```{r perf_plot, out.width='50%'}
-include_graphics(snakemake@input[['perf_plot']])
+include_graphics(here(snakemake@input[['perf_plot']]))
 ```
 
 ### ROC & PRC Curves
 
 ```{r roc_plots, out.width='80%'}
-include_graphics(snakemake@input[['roc_plots']])
-```
-
-## Hyperparameter Performance
-
-```{r hp-plot, out.width='50%'}
-include_graphics(snakemake@input[['hp_plot']])
+include_graphics(here(snakemake@input[['roc_plots']]))
 ```
 
 ## Memory Usage & Runtime
 
 ```{r runtime-plot, out.width='50%'}
-include_graphics(snakemake@input[['bench_plot']])
+include_graphics(here(snakemake@input[['bench_plot']]))
 ```
 
 Each model training run was given `r snakemake@params[['ncores']]` cores
@@ -79,10 +76,10 @@ feats <- dat %>%
 feats %>%
     ggplot(aes(frac_sig)) +
     geom_histogram()
-feats %>% 
+feats %>%
     ggplot(aes(mean_diff)) +
     geom_histogram()
-feats %>% 
+feats %>%
     ggplot(aes(frac_sig, mean_diff)) +
     geom_point(alpha = 0.5)
 ```
@@ -90,6 +87,6 @@ feats %>%
 ### Performance differences
 
 ```{r feat-imp-plot, out.width='50%'}
-include_graphics(snakemake@input[['feat_plot']])
+include_graphics(here(snakemake@input[['feat_plot']]))
 ```
 

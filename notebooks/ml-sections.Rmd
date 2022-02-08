@@ -8,6 +8,7 @@ output:
       in_header: preamble.tex
   html_document:
     theme: paper
+    self-contained: true
 fontsize: 12pt
 geometry: margin=1.0in
 bibliography: references.bib
