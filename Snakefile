@@ -15,9 +15,8 @@ seeds = range(start_seed, start_seed + nseeds)
 
 rule targets:
     input:
-        'report.md',
-        'docs/ml-sections.pdf',
-        'docs/ml-sections.html'
+        'docs/report.html',
+        #'docs/ml-sections.html'
 
 rule join_metadata:
     input:
@@ -143,27 +142,30 @@ rule combine_benchmarks:
 
 rule plot_performance:
     input:
-        R="code/plot_perf.R",
+        R="code/plot_perf_box.R",
+        fcns='code/plotting-functions.R',
         csv='results/performance_results.csv'
     output:
         plot='figures/performance_box.png'
     log:
         "log/plot_performance.txt"
     script:
-        "code/plot_perf.R"
+        "code/plot_perf_box.R"
 
 rule plot_roc_curves:
     input:
-        R="code/plot_roc.R",
+        R="code/plot_perf_curves.R",
+        fcns='code/plotting-functions.R',
         csv=rules.combine_sensspec.output.csv
     output:
         plot="figures/ROC-PRC-curves.png"
     script:
-        "code/plot_roc.R"
+        "code/plot_perf_curves.R"
 
 rule plot_feature_importance:
     input:
         R='code/plot_feature-importance.R',
+        fcns='code/plotting-functions.R',
         feat='results/feature-importance_results.csv',
         tax='data/processed/final.taxonomy.tsv'
     output:
@@ -196,25 +198,22 @@ rule plot_benchmarks:
 
 rule render_report:
     input:
-        Rmd='report.Rmd',
+        Rmd='notebooks/report.Rmd',
         R='code/render.R',
         perf_plot=rules.plot_performance.output.plot,
         feat_plot=rules.plot_feature_importance.output.plot,
-        hp_plot=expand(rules.plot_hp_performance.output.plot,
-                       method = ml_methods,
-                       group_colname = groups,
-                       test_group = test_groups,
-                       train_frac = training_fracs),
         bench_plot=rules.plot_benchmarks.output.plot,
         roc_plots=expand(rules.plot_roc_curves.output.plot,
                          method = ml_methods,
                          group_colname = groups,
                          train_frac = training_fracs)
     output:
-        doc='report.md'
+        doc='docs/report.html'
     log:
         "log/render_report.txt"
     params:
+        format='html_document',
+        output_dir='docs/',
         nseeds=nseeds,
         ml_methods=ml_methods,
         ncores=ncores,
@@ -222,19 +221,28 @@ rule render_report:
     script:
         'code/render.R'
 
+rule make_figure:
+    input:
+        R='code/make-figure.R',
+        fcns='code/plotting-functions.R'
+    output:
+        tiff='figures/Figure_5.tiff'
+    script:
+        'code/make-figure.R'
+
 rule render_writeup:
     input:
-        Rmd='paper/ml-sections.Rmd'
+        Rmd='notebooks/ml-sections.Rmd',
+        R='code/render.R',
+        fig=rules.make_figure.output.tiff
     output:
         'docs/ml-sections.html',
         'docs/ml-sections.pdf'
-    shell:
-        """
-        R -e 'rmarkdown::render("{input.Rmd}",
-                                 output_format = "all",
-                                 output_dir = "docs/"
-                                 )'
-        """
+    params:
+        format='all',
+        output_dir='docs/'
+    script:
+        'code/render.R'
 
 
 rule clean:

@@ -81,7 +81,7 @@ plot_perf_box <- function(perf_dat) {
                      names_to = 'metric') %>%
         mutate(metric = factor(metric,
                                levels = c("test AUPRC", "test AUROC", "train AUROC"))) %>%
-        ggplot(aes(x = value, y = metric, color = test_group)) +
+        ggplot(aes(x = value, y = metric)) +
         geom_vline(xintercept = 0.5, linetype = 'dashed') +
         geom_boxplot() +
         xlim(0.5, 1) +
