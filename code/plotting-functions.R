@@ -97,7 +97,9 @@ plot_prc <- function(prc_dat, baseline_precision) {
     )
 }
 
-plot_perf_box <- function(perf_dat) {
+plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
+  baselines <- data.frame(metric_short = factor(c('ROC', 'PRC')),
+                          baseline = c(0.5, baseline_prc))
   perf_dat %>%
     rename(
       `train AUROC` = cv_metric_AUC,
@@ -110,10 +112,16 @@ plot_perf_box <- function(perf_dat) {
     mutate(metric = factor(metric,
       levels = c("test AUPRC", "test AUROC", "train AUROC")
     )) %>%
+    mutate(metric_short = factor(case_when(str_detect(metric, 'ROC') ~ 'ROC',
+                                    str_detect(metric, 'PRC') ~ 'PRC',
+                                    TRUE ~ 'NA'), levels = c('ROC', 'PRC'))
+           ) %>%
     ggplot(aes(x = value, y = metric)) +
-    geom_vline(xintercept = 0.5, linetype = "dashed") +
+    geom_vline(aes(xintercept = baseline), data = baselines,
+               linetype = "dashed", color = "grey50") +
     geom_boxplot() +
-    xlim(0.5, 1) +
+    facet_wrap('metric_short', ncol = 1, scales = 'free_y',
+               strip.position = 'bottom') +
     labs(x = "Performance", y = "") +
     theme_bw() +
     theme(
