@@ -224,7 +224,10 @@ rule render_report:
 rule make_figure_5:
     input:
         R='code/make-figure-5.R',
-        fcns='code/plotting-functions.R'
+        fcns='code/plotting-functions.R',
+        figs=[rules.plot_performance.output,
+              rules.plot_roc_curves.output,
+              rules.plot_feature_importance.output]
     output:
         plot='figures/Figure5.pdf'
     script:
@@ -243,7 +246,6 @@ rule render_writeup:
         output_dir='docs/'
     script:
         'code/render.R'
-
 
 rule clean:
     input:
