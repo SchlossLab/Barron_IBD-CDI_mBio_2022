@@ -20,7 +20,7 @@ prc_plot <- sens_dat %>%
 
 # performance box
 perf_box_plot <- read_csv("results/performance_results.csv") %>%
-    plot_perf_box(baseline_prc = baselien_prc)
+    plot_perf_box(baseline_prc = baseline_prc)
 
 # feature importance
 feat_dat <- read_csv("results/feature-importance_results.csv")
