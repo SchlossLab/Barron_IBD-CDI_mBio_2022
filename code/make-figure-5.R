@@ -3,9 +3,6 @@ source("code/plotting-functions.R")
 metadat <- readxl::read_excel("data/raw/ml_metadata.xlsx") %>%
   rename(sample = group)
 
-# performance box
-perf_box_plot <- read_csv("results/performance_results.csv") %>% plot_perf_box()
-
 # ROC
 sens_dat <- read_csv("results/sensspec.csv")
 roc_plot <- sens_dat %>%
@@ -16,10 +13,14 @@ roc_plot <- sens_dat %>%
 cdiff_tally <- metadat %>% group_by(pos_cdiff_d1) %>% tally()
 npos <- cdiff_tally %>% filter(pos_cdiff_d1 == 'yes') %>% pull(n)
 ntot <-cdiff_tally %>% pull(n) %>% sum()
-baseline_prec <- npos / ntot
+baseline_prc <- npos / ntot
 prc_plot <- sens_dat %>%
   calc_prc() %>%
-  plot_prc(baseline_prec = baseline_prec)
+  plot_prc(baseline_prec = baseline_prc)
+
+# performance box
+perf_box_plot <- read_csv("results/performance_results.csv") %>%
+    plot_perf_box(baseline_prc = baselien_prc)
 
 # feature importance
 feat_dat <- read_csv("results/feature-importance_results.csv")

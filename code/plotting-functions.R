@@ -98,9 +98,7 @@ plot_prc <- function(prc_dat, baseline_precision) {
 }
 
 plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
-  baselines <- data.frame(metric_short = factor(c('ROC', 'PRC')),
-                          baseline = c(0.5, baseline_prc))
-  perf_dat %>%
+  perf_dat <- perf_dat %>%
     rename(
       `train AUROC` = cv_metric_AUC,
       `test AUROC` = AUC,
@@ -115,19 +113,35 @@ plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
     mutate(metric_short = factor(case_when(str_detect(metric, 'ROC') ~ 'ROC',
                                     str_detect(metric, 'PRC') ~ 'PRC',
                                     TRUE ~ 'NA'), levels = c('ROC', 'PRC'))
-           ) %>%
+           )
+  xlims <- c(min(baseline_prc, 0.5), 1)
+  roc <- perf_dat %>% filter(str_detect(metric, 'ROC')) %>%
     ggplot(aes(x = value, y = metric)) +
-    geom_vline(aes(xintercept = baseline), data = baselines,
-               linetype = "dashed", color = "grey50") +
     geom_boxplot() +
-    facet_wrap('metric_short', ncol = 1, scales = 'free_y',
-               strip.position = 'bottom') +
+    geom_vline(aes(xintercept = 0.5),
+               linetype = "dashed", color = "grey50") +
+    xlim(xlims) +
+    theme_bw() +
+    theme(
+      plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_blank()
+    )
+  prc <- perf_dat %>% filter(str_detect(metric, 'PRC')) %>%
+    ggplot(aes(x = value, y = metric)) +
+    geom_boxplot() +
+    geom_vline(aes(xintercept = baseline_prc),
+               linetype = "dashed", color = "grey50") +
+    xlim(xlims) +
     labs(x = "Performance", y = "") +
     theme_bw() +
     theme(
-      plot.margin = unit(x = c(0, 5, 0, 0), units = "pt"),
+      plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"),
       axis.title.y = element_blank()
     )
+  plot_grid(roc, prc, axis = 'bottom', align = 'hv', nrow = 2,
+            rel_heights = c(1, 0.5))
 }
 
 get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
