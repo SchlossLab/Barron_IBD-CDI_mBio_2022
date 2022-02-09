@@ -92,7 +92,7 @@ The workflow used to perform the machine learning analysis is available at https
 
 \newpage
 
-```{r fig-5-ml, out.width='100%'}
+```{r fig-5-ml, out.width='100%', out.height='100%'}
 include_graphics(here('figures', 'Figure5.pdf'))
 ```
 
