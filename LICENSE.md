@@ -5,7 +5,7 @@
 All code included in this repository is made available under the
 [OSI][osi]-approved [MIT license][mit-license].
 
-Copyright (c) 2022 Madeline R. Barron, Kelly L. Sovacool, Patrick D. Schloss, Vincent B. Young
+Copyright (c) 2022 Madeline R. Barron, Kelly L. Sovacool, Lisa Abernathy-Close, Kimberly C. Vendrov, Alexandra K. Standke, Ingrid L. Bergin, Patrick D. Schloss, Vincent B. Young
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
