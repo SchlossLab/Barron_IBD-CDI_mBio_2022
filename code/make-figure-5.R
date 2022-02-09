@@ -13,9 +13,13 @@ roc_plot <- sens_dat %>%
   plot_roc()
 
 # PRC
+cdiff_tally <- metadat %>% group_by(pos_cdiff_d1) %>% tally()
+npos <- cdiff_tally %>% filter(pos_cdiff_d1 == 'yes') %>% pull(n)
+ntot <-cdiff_tally %>% pull(n) %>% sum()
+baseline_prec <- npos / ntot
 prc_plot <- sens_dat %>%
   calc_prc() %>%
-  plot_prc()
+  plot_prc(baseline_prec = baseline_prec)
 
 # feature importance
 feat_dat <- read_csv("results/feature-importance_results.csv")

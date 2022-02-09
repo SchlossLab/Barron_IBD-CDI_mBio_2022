@@ -77,7 +77,7 @@ plot_roc <- function(roc_dat) {
 }
 
 # precision vs recall
-plot_prc <- function(prc_dat) {
+plot_prc <- function(prc_dat, baseline_precision) {
   prc_dat %>%
     ggplot(aes(
       x = recall, y = mean_precision,
@@ -86,7 +86,7 @@ plot_prc <- function(prc_dat) {
     geom_ribbon(fill = greens[3]) +
     geom_line(color = greens[9]) +
     coord_equal() +
-    geom_abline(intercept = 1, slope = 1, linetype = "dashed", color = "grey50") +
+    geom_hline(yintercept = baseline_precision, linetype = "dashed", color = "grey50") +
     scale_y_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
     scale_x_continuous(expand = c(0, 0), limits = c(-0.01, 1.01)) +
     labs(x = "Recall", y = "Precision") +
