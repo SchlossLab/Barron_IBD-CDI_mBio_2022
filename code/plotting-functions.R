@@ -71,7 +71,7 @@ plot_roc <- function(roc_dat) {
     labs(x = "Specificity", y = "Sensitivity") +
     theme_bw() +
     theme(
-      plot.margin = unit(x = c(0, 8, 0, 0), units = "pt"),
+      plot.margin = unit(x = c(2, 8, 0, 0), units = "pt"),
       legend.title = element_blank()
     )
 }
@@ -92,7 +92,7 @@ plot_prc <- function(prc_dat, baseline_precision) {
     labs(x = "Recall", y = "Precision") +
     theme_bw() +
     theme(
-      plot.margin = unit(x = c(0, 5, 0, 0), units = "pt"),
+      plot.margin = unit(x = c(2, 5, 0, 0), units = "pt"),
       legend.position = "none"
     )
 }
@@ -126,7 +126,8 @@ plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
       plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"),
       axis.title.x = element_blank(),
       axis.title.y = element_blank(),
-      axis.text.x = element_blank()
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank()
     )
   prc <- perf_dat %>% filter(str_detect(metric, 'PRC')) %>%
     ggplot(aes(x = value, y = metric)) +
@@ -140,8 +141,7 @@ plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
       plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"),
       axis.title.y = element_blank()
     )
-  plot_grid(roc, prc, axis = 'bottom', align = 'hv', nrow = 2,
-            rel_heights = c(1, 0.5))
+  roc / prc + plot_layout(heights = c(1, 0.5))
 }
 
 get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {

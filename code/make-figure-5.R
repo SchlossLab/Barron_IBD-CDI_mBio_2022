@@ -54,9 +54,18 @@ rel_abun_plot <- top_feats_rel_abun %>%
   plot_rel_abun() +
   theme(axis.text.y = element_blank())
 
+
 # put it all together for Figure 5
-performance <- perf_box_plot + roc_plot + prc_plot +
-  plot_annotation(tag_levels = "A")
+curves <- align_patches(roc_plot, prc_plot)
+performance <- plot_grid(perf_box_plot, curves[[1]], curves[[2]],
+    nrow = 1, ncol = 3, rel_heights = c(1, 0.5, 0.5, 1),
+    labels = 'AUTO',
+    label_fontfamily = "sans",
+    label_fontface = "plain",
+    label_size = 12,
+    label_x = -0.01,
+    label_y = 1.01
+)
 features <- plot_grid(feat_imp_plot, rel_abun_plot,
   rel_widths = c(1, 0.6),
   align = "h", axis = "l", nrow = 1,
