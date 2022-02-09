@@ -78,11 +78,13 @@ The workflow used to perform the machine learning analysis is available at https
 
 \newpage
 
-## Figure 5
-
-TODO caption
-
-```{r fig-5-ml, fig.cap='\\label{fig:ml}'}
+```{r fig-5-ml, out.width='100%'}
 include_graphics(here('figures', 'Figure5.pdf'))
 ```
 
+**Figure 5.** Machine learning analysis to predict _C. difficile_ colonization.
+**A)** Mean area under the receiver-operator characteristic curve (AUROC) on the cross-validation folds during model training, mean AUROC on the held-out test data, and mean the area under the precision-recall curve (AUPRC) on the held-out test data. The baseline AUROC of `0.5` is shown as the dashed grey line.
+**B)** The receiver-operator characteristic curve for the test data. Mean specificity is plotted against sensitivity. The light green shaded area shows the standard deviation.
+**C)** The precision-recall curve for the test data. Mean precision is plotted against recall. The light blue shaded area shows the standard deviation.
+**D)** The top 20 most important OTUs as determined by permutation tests. Features with a larger decrease in AUROC when permuted are more important. The points are the median decrease in AUROC while the tails are the standard deviation. Color represents the percentage of models for which the feature's permutation AUROC was significantly different from the actual AUROC.
+**E)** Log$_{10}$ relative abundance for the top 20 most important OTUs on day 0 of the experiment.
