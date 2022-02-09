@@ -35,6 +35,14 @@ mean_auroc <- perf_dat %>% pull(AUC) %>% mean()
 sd_auroc <- perf_dat %>% pull(AUC) %>% sd()
 mean_auprc <- perf_dat %>% pull(prAUC) %>% mean()
 sd_auprc <- perf_dat %>% pull(prAUC) %>% sd()
+
+
+metadat <- readxl::read_excel("data/raw/ml_metadata.xlsx") %>%
+  rename(sample = group)
+cdiff_tally <- metadat %>% group_by(pos_cdiff_d1) %>% tally()
+npos <- cdiff_tally %>% filter(pos_cdiff_d1 == 'yes') %>% pull(n)
+ntot <-cdiff_tally %>% pull(n) %>% sum()
+baseline_prc <- npos / ntot
 ```
 
 ## Machine learning prediction of _C. difficile_ colonization based on microbiota composition on day of challenge  
@@ -83,8 +91,22 @@ include_graphics(here('figures', 'Figure5.pdf'))
 ```
 
 **Figure 5.** Machine learning analysis to predict _C. difficile_ colonization.
-**A)** Mean area under the receiver-operator characteristic curve (AUROC) on the cross-validation folds during model training, mean AUROC on the held-out test data, and mean the area under the precision-recall curve (AUPRC) on the held-out test data. The baseline AUROC of `0.5` is shown as the dashed grey line.
-**B)** The receiver-operator characteristic curve for the test data. Mean specificity is plotted against sensitivity. The light green shaded area shows the standard deviation.
-**C)** The precision-recall curve for the test data. Mean precision is plotted against recall. The light blue shaded area shows the standard deviation.
-**D)** The top 20 most important OTUs as determined by permutation tests. Features with a larger decrease in AUROC when permuted are more important. The points are the median decrease in AUROC while the tails are the standard deviation. Color represents the percentage of models for which the feature's permutation AUROC was significantly different from the actual AUROC.
-**E)** Log$_{10}$ relative abundance for the top 20 most important OTUs on day 0 of the experiment.
+**A)** Mean area under the receiver-operator characteristic curve (AUROC) on the
+cross-validation folds during model training, mean AUROC on the held-out test
+data, and mean the area under the precision-recall curve (AUPRC) on the held-out
+test data. The dashed grey lines represent the baseline AUROC (`0.5`) and AUPRC
+(`r baseline_prc`). 
+**B)** The receiver-operator characteristic curve for the
+test data. Mean specificity is plotted against sensitivity. The light green
+shaded area shows the standard deviation. 
+**C)** The precision-recall curve for
+the test data. Mean precision is plotted against recall. The light blue shaded
+area shows the standard deviation. 
+**D)** The top 20 most important OTUs as
+determined by permutation tests. Features with a larger decrease in AUROC when
+permuted are more important. The points are the median decrease in AUROC while
+the tails are the standard deviation. Color represents the percentage of models
+for which the feature's permutation AUROC was significantly different from the
+actual AUROC. 
+**E)** Log$_{10}$ relative abundance for the top 20 most important
+OTUs on day 0 of the experiment.
