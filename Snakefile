@@ -16,7 +16,7 @@ seeds = range(start_seed, start_seed + nseeds)
 rule targets:
     input:
         'docs/report.html',
-        #'docs/ml-sections.html'
+        'docs/ml-sections.html'
 
 rule join_metadata:
     input:
@@ -226,7 +226,7 @@ rule make_figure_5:
         R='code/make-figure-5.R',
         fcns='code/plotting-functions.R'
     output:
-        tiff='figures/Figure5.tiff'
+        plot='figures/Figure5.pdf'
     script:
         'code/make-figure-5.R'
 
@@ -234,7 +234,7 @@ rule render_writeup:
     input:
         Rmd='notebooks/ml-sections.Rmd',
         R='code/render.R',
-        fig=rules.make_figure_5.output.tiff
+        fig=rules.make_figure_5.output.plot
     output:
         'docs/ml-sections.html',
         'docs/ml-sections.pdf'
@@ -249,7 +249,10 @@ rule clean:
     input:
         rules.render_report.output,
         rules.plot_performance.output.plot,
-        rules.plot_benchmarks.output.plot
+        rules.plot_benchmarks.output.plot,
+        rules.plot_roc_curves.output.plot,
+        rules.make_figure_5.output.plot,
+        rules.render_writeup.output
     shell:
         '''
         rm -rf {input}
