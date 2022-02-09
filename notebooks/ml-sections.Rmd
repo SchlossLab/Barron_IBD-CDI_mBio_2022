@@ -57,10 +57,6 @@ Mean AUPRC `r mean_auprc` (s.d. `r sd_auprc`)
 
 TODO feature importance
 
-### Figure 5
-
-TODO caption
-
 ## Machine learning methods
 
 TODO describe pipeline [@topcuoglu_framework_2020]
@@ -70,3 +66,23 @@ mikropml version 1.2.1 [@topcuoglu_mikropml_2021]
 The workflow used to perform the machine learning analysis is available at https://github.com/SchlossLab/Barron_IBD-CDI_2022
 
 ## References
+
+\setlength{\parindent}{-0.25in}
+\setlength{\leftskip}{0.25in}
+\noindent
+
+<div id="refs"></div>
+
+\setlength{\parindent}{0in}
+\setlength{\leftskip}{0in}
+
+\newpage
+
+## Figure 5
+
+TODO caption
+
+```{r fig-5-ml, fig.cap='\\label{fig:ml}'}
+include_graphics(here('figures', 'Figure5.pdf'))
+```
+
