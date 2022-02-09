@@ -37,7 +37,7 @@ mean_auprc <- perf_dat %>% pull(prAUC) %>% mean()
 sd_auprc <- perf_dat %>% pull(prAUC) %>% sd()
 
 
-metadat <- readxl::read_excel("data/raw/ml_metadata.xlsx") %>%
+metadat <- readxl::read_excel(here("data", "raw", "ml_metadata.xlsx")) %>%
   rename(sample = group)
 cdiff_tally <- metadat %>% group_by(pos_cdiff_d1) %>% tally()
 npos <- cdiff_tally %>% filter(pos_cdiff_d1 == 'yes') %>% pull(n)
