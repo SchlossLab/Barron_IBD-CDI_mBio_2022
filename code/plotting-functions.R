@@ -98,28 +98,29 @@ plot_prc <- function(prc_dat, baseline_precision) {
 }
 
 plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
-  perf_dat <- perf_dat %>%
+  perf_dat_long <- perf_dat %>%
     rename(
-      `train AUROC` = cv_metric_AUC,
-      `test AUROC` = AUC,
-      `test AUPRC` = prAUC
+      `training AUROC` = cv_metric_AUC,
+      `testing AUROC` = AUC,
+      `testing AUPRC` = prAUC
     ) %>%
-    pivot_longer(c(`train AUROC`, `test AUROC`, `test AUPRC`),
+    pivot_longer(c(`training AUROC`, `testing AUROC`, `testing AUPRC`),
       names_to = "metric"
     ) %>%
     mutate(metric = factor(metric,
-      levels = c("test AUPRC", "test AUROC", "train AUROC")
+      levels = c("testing AUPRC", "testing AUROC", "training AUROC")
     )) %>%
     mutate(metric_short = factor(case_when(str_detect(metric, 'ROC') ~ 'ROC',
                                     str_detect(metric, 'PRC') ~ 'PRC',
                                     TRUE ~ 'NA'), levels = c('ROC', 'PRC'))
            )
   xlims <- c(min(baseline_prc, 0.5), 1)
-  roc <- perf_dat %>% filter(str_detect(metric, 'ROC')) %>%
+  roc <- perf_dat_long %>% filter(str_detect(metric, 'ROC')) %>%
     ggplot(aes(x = value, y = metric)) +
     geom_boxplot() +
     geom_vline(aes(xintercept = 0.5),
                linetype = "dashed", color = "grey50") +
+    scale_y_discrete(labels=function(x){sub("\\s", "\n", x)}) +
     xlim(xlims) +
     theme_bw() +
     theme(
@@ -129,11 +130,12 @@ plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank()
     )
-  prc <- perf_dat %>% filter(str_detect(metric, 'PRC')) %>%
+  prc <- perf_dat_long %>% filter(str_detect(metric, 'PRC')) %>%
     ggplot(aes(x = value, y = metric)) +
     geom_boxplot() +
     geom_vline(aes(xintercept = baseline_prc),
                linetype = "dashed", color = "grey50") +
+    scale_y_discrete(labels=function(x){sub("\\s", "\n", x)}) +
     xlim(xlims) +
     labs(x = "Performance", y = "") +
     theme_bw() +
