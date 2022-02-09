@@ -16,7 +16,7 @@ seeds = range(start_seed, start_seed + nseeds)
 rule targets:
     input:
         'docs/report.html',
-        'docs/ml-sections.html'
+        'docs/ml-sections.pdf'
 
 rule join_metadata:
     input:
@@ -239,7 +239,6 @@ rule render_writeup:
         R='code/render.R',
         fig=rules.make_figure_5.output.plot
     output:
-        'docs/ml-sections.html',
         'docs/ml-sections.pdf'
     params:
         format='all',
