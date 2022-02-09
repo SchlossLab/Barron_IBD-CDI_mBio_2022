@@ -1,3 +1,4 @@
+library(cowplot)
 library(ggtext)
 library(patchwork)
 library(tidyverse)
@@ -21,23 +22,6 @@ calc_roc <- function(sens_dat) {
     )
 }
 
-# sensitivity vs specificity
-plot_roc <- function(roc_dat) {
-  roc_dat %>%
-    ggplot(aes(x = specificity, y = mean_sensitivity,
-             ymin = lower_sens, ymax = upper_sens)) +
-    geom_ribbon(fill = blues[3]) +
-    geom_line(color = blues[9]) +
-    coord_equal() +
-    geom_abline(intercept = 1, slope = 1, linetype="dashed", color="grey50") +
-    scale_y_continuous(expand = c(0,0), limits = c(-0.01,1.01)) +
-    scale_x_reverse(expand = c(0,0), limits = c(1.01,-0.01)) +
-    labs(x = 'Specificity', y = 'Sensitivity') +
-    theme_bw() +
-    theme(plot.margin = unit(x = c(0, 7, 0, 0), units = "pt"),
-          legend.title = element_blank())
-}
-
 calc_prc <- function(sens_dat) {
   sens_dat %>%
     rename(recall = sensitivity) %>%
@@ -55,6 +39,23 @@ calc_prc <- function(sens_dat) {
     )
 }
 
+# sensitivity vs specificity
+plot_roc <- function(roc_dat) {
+  roc_dat %>%
+    ggplot(aes(x = specificity, y = mean_sensitivity,
+             ymin = lower_sens, ymax = upper_sens)) +
+    geom_ribbon(fill = blues[3]) +
+    geom_line(color = blues[9]) +
+    coord_equal() +
+    geom_abline(intercept = 1, slope = 1, linetype="dashed", color="grey50") +
+    scale_y_continuous(expand = c(0,0), limits = c(-0.01,1.01)) +
+    scale_x_reverse(expand = c(0,0), limits = c(1.01,-0.01)) +
+    labs(x = 'Specificity', y = 'Sensitivity') +
+    theme_bw() +
+    theme(plot.margin = unit(x = c(0, 8, 0, 0), units = "pt"),
+          legend.title = element_blank())
+}
+
 # precision vs recall
 plot_prc <- function(prc_dat) {
   prc_dat %>%
@@ -68,7 +69,7 @@ plot_prc <- function(prc_dat) {
     scale_x_continuous(expand = c(0,0), limits = c(-0.01,1.01)) +
     labs(x = 'Recall', y = 'Precision') +
     theme_bw() +
-    theme(plot.margin = unit(x = c(0, 7, 0, 7), units = "pt"),
+    theme(plot.margin = unit(x = c(0, 5, 0, 0), units = "pt"),
           legend.position = 'none')
 }
 
@@ -87,11 +88,11 @@ plot_perf_box <- function(perf_dat) {
         xlim(0.5, 1) +
         labs(x='Performance', y='') +
         theme_bw() +
-        theme(plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
+        theme(plot.margin = unit(x = c(0, 5, 0, 0), units = "pt"),
+              axis.title.y = element_blank())
 }
 
-plot_feat_imp <- function(feat_dat, tax_dat, alpha_level = 0.05) {
-
+get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
     feat_dat <- feat_dat %>%
         rename(otu = names)
     tax_dat <- tax_dat %>%
@@ -125,10 +126,15 @@ plot_feat_imp <- function(feat_dat, tax_dat, alpha_level = 0.05) {
         slice_max(n = 20, order_by = mean_diff) %>%
         pull(otu)
 
-    feat_imp_plot <- feats %>%
+    return(feats %>%
         filter(otu %in% top_20) %>%
         mutate(label = fct_reorder(as.factor(label), mean_diff),
-               percent_models_signif = frac_sig * 100) %>%
+               percent_models_signif = frac_sig * 100)
+    )
+}
+
+plot_feat_imp <- function(top_feats) {
+  top_feats  %>%
         ggplot(aes(x = -mean_diff, y = label,
                    color = percent_models_signif)) +
         geom_vline(xintercept = 0, linetype = 'dashed') +
@@ -138,12 +144,26 @@ plot_feat_imp <- function(feat_dat, tax_dat, alpha_level = 0.05) {
         labs(y = '', x = 'Mean decrease in AUROC') +
         theme_bw() +
         theme(axis.text.y = element_markdown(),
+              axis.title.y = element_blank(),
               legend.position = 'bottom',
               legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
-              plot.margin = unit(x = c(0, 0, 0, 0), units = "pt"))
-    return(feat_imp_plot)
+              plot.margin = unit(x = c(17, 8, 0, 2), units = "pt"))
 }
 
-plot_relabun <- function() {
-
+plot_rel_abun <- function(rel_abun_dat) {
+  rel_abun_dat %>%
+    ggplot(aes(rel_abun, label, color = cdiff_d1_status)) +
+    geom_boxplot() +
+    scale_x_log10() +
+    scale_color_brewer(palette = 'Set1') +
+    labs(x = 'log10 Relative Abundance', y = '') +
+    guides(color = guide_legend(title = "Day 1 _C. difficile_")) +
+    theme_bw() +
+    theme() +
+    theme(axis.text.y = element_markdown(),
+          axis.title.y = element_blank(),
+          legend.title = element_markdown(),
+          legend.position = 'bottom',
+          legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
+          plot.margin = unit(x = c(17, 5, 0, 0), units = "pt"))
 }

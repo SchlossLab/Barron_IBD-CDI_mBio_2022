@@ -221,20 +221,20 @@ rule render_report:
     script:
         'code/render.R'
 
-rule make_figure:
+rule make_figure_5:
     input:
-        R='code/make-figure.R',
+        R='code/make-figure-5.R',
         fcns='code/plotting-functions.R'
     output:
-        tiff='figures/Figure_5.tiff'
+        tiff='figures/Figure5.tiff'
     script:
-        'code/make-figure.R'
+        'code/make-figure-5.R'
 
 rule render_writeup:
     input:
         Rmd='notebooks/ml-sections.Rmd',
         R='code/render.R',
-        fig=rules.make_figure.output.tiff
+        fig=rules.make_figure_5.output.tiff
     output:
         'docs/ml-sections.html',
         'docs/ml-sections.pdf'
