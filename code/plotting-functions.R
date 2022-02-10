@@ -254,17 +254,12 @@ capwords <- function(s, strict = FALSE) {
     sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
 }
 
-greys <- RColorBrewer::brewer.pal(name = 'Greys', n = 9)
-c(No=greys[7], Yes=greys[4])
-
 plot_rel_abun <- function(top_feats_rel_abun) {
   top_feats_rel_abun %>% mutate(pos_cdiff_d1 = capwords(pos_cdiff_d1)) %>%
     ggplot(aes(rel_abun_c, label, color = pos_cdiff_d1)) +
-    stat_summary(fun.data = mean_sd,
-                 geom = 'pointrange',
-                 position = position_dodge(width = 0.5)) +
+    geom_boxplot() +
     scale_x_log10() +
-    scale_color_manual(values = c(No=greys[7], Yes=greys[4])) +
+    scale_color_manual(values = c(No='#404040', Yes='#999999')) +
     labs(x = expression('Relative Abundance ('*log[10]+1*")")) +
     guides(color = guide_legend(title = "Positive for \n_C. difficile_")) +
     theme_bw() +
