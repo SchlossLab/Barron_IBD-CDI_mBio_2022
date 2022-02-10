@@ -229,7 +229,8 @@ rule make_figure_5:
               rules.plot_roc_curves.output,
               rules.plot_feature_importance.output]
     output:
-        plot='figures/Figure5.pdf'
+        pdf='figures/Figure5.pdf',
+        tiff='figures/Figure5.tiff'
     script:
         'code/make-figure-5.R'
 
@@ -237,7 +238,7 @@ rule render_writeup:
     input:
         Rmd='notebooks/ml-sections.Rmd',
         R='code/render.R',
-        fig=rules.make_figure_5.output.plot
+        fig=rules.make_figure_5.output.pdf
     output:
         'docs/ml-sections.pdf'
     params:
@@ -252,7 +253,7 @@ rule clean:
         rules.plot_performance.output.plot,
         rules.plot_benchmarks.output.plot,
         rules.plot_roc_curves.output.plot,
-        rules.make_figure_5.output.plot,
+        rules.make_figure_5.output,
         rules.render_writeup.output
     shell:
         '''

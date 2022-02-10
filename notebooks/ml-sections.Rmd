@@ -92,8 +92,8 @@ The workflow used to perform the machine learning analysis is available at https
 
 \newpage
 
-```{r fig-5-ml, out.width='100%', out.height='100%'}
-include_graphics(here('figures', 'Figure5.pdf'))
+```{r fig-5-ml, out.width='100%'}
+include_graphics(here(snakemake@input[['fig']]))
 ```
 
 **Figure 5.** Machine learning analysis to predict _C. difficile_ colonization.
