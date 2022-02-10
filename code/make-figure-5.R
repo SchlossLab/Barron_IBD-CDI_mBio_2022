@@ -35,8 +35,9 @@ abs_abun_dat <- data.table::fread("data/raw/sample.final.shared") %>%
 abs_abun_dat$total_counts <- rowSums(abs_abun_dat %>% select(starts_with("Otu")))
 rel_abun_dat <- abs_abun_dat %>%
   pivot_longer(starts_with("Otu"), names_to = "otu", values_to = "count") %>%
-  mutate(rel_abun = count / total_counts) %>%
-  select(sample, pos_cdiff_d1, otu, rel_abun)
+  mutate(rel_abun = count / total_counts,
+         rel_abun_c = rel_abun + 1) %>%
+  select(sample, pos_cdiff_d1, otu, rel_abun, rel_abun_c)
 top_feats_rel_abun <- top_feats %>%
   select(otu, label) %>%
   left_join(rel_abun_dat, by = "otu") %>%
@@ -45,12 +46,7 @@ top_feats_rel_abun <- top_feats %>%
     pos_cdiff_d1 == "no" ~ "neg.",
     TRUE ~ "NA"
   ))
-smallest_non_zero <- top_feats_rel_abun %>% # find smallest non-zero value
-  filter(rel_abun > 0) %>%
-  slice_min(rel_abun) %>%
-  pull(rel_abun)
 rel_abun_plot <- top_feats_rel_abun %>%
-  mutate(rel_abun = rel_abun + smallest_non_zero / 10) %>%
   plot_rel_abun() +
   theme(axis.text.y = element_blank())
 

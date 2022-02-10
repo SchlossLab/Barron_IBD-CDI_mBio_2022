@@ -169,14 +169,21 @@ get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
 
   feats <- feat_dat %>%
     group_by(otu) %>%
+      mutate(perf_decrease = -perf_metric_diff) %>%
     summarise(
       mean_auroc = mean(perf_metric),
       sd_auroc = sd(perf_metric),
       mean_diff = mean(perf_metric_diff),
       median_diff = median(perf_metric_diff),
       sd_diff = sd(perf_metric_diff),
-      lowerq = quantile(perf_metric_diff)[2],
-      upperq = quantile(perf_metric_diff)[4]
+      mean_decrease = mean(perf_decrease),
+      sd_decrease = sd(perf_decrease),
+      se_decrease = sd_decrease / sqrt(n()),
+      lowerq = quantile(perf_decrease)[2],
+      upperq = quantile(perf_decrease)[4],
+      iqr = upperq - lowerq,
+      lower_whisker = lowerq - 1.5 * iqr,
+      upper_whisker = upperq + 1.5 * iqr
     ) %>%
     inner_join(signif_feats, by = c("otu")) %>%
     left_join(tax_dat %>% select(otu, label), by = "otu") %>%
@@ -197,43 +204,78 @@ get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
 }
 
 plot_feat_imp <- function(top_feats) {
+  # legend title is incorrectly aligned. known issue: https://github.com/tidyverse/ggplot2/issues/2465
   top_feats %>%
     ggplot(aes(
-      x = -mean_diff, y = label,
+      x = mean_decrease,
+      y = label,
       color = percent_models_signif
     )) +
+    geom_pointrange(aes(xmin = mean_decrease - sd_decrease, xmax = mean_decrease + sd_decrease)) +
     geom_vline(xintercept = 0, linetype = "dashed") +
-    geom_pointrange(aes(
-      xmin = -mean_diff - sd_diff,
-      xmax = -mean_diff + sd_diff
-    )) +
     scale_color_continuous(type = "viridis", name = "% models") +
-    labs(y = "", x = "Mean decrease in AUROC") +
+    labs(y = "", x = "Decrease in AUROC") +
+    guides(color = guide_colorbar(label.position = "bottom", # https://github.com/tidyverse/ggplot2/issues/2465
+                                title.position = "left", title.vjust = 0.8)
+           ) +
     theme_bw() +
     theme(
-      axis.text.y = element_markdown(),
+      axis.text.y = element_markdown(size = 10),
       axis.title.y = element_blank(),
+      legend.title = element_text(size = 9,
+                                  margin = margin(0, 0, 0, 0, "pt")),
+      legend.title.align = 0.5,
+      legend.text = element_text(size = 8),
       legend.position = "bottom",
+      legend.justification = 'left',
+      legend.box.just = 'left',
+      legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
       legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
       plot.margin = unit(x = c(17, 8, 0, 2), units = "pt")
     )
 }
 
-plot_rel_abun <- function(rel_abun_dat) {
-  rel_abun_dat %>%
-    ggplot(aes(rel_abun, label, color = cdiff_d1_status)) +
-    geom_boxplot() +
+mean_iqr <- function(x) {
+    return(data.frame(y = mean(x),
+                      ymin = quantile(x)[2],
+                      ymax = quantile(x)[4])
+           )
+}
+
+mean_sd <- function(x) {
+    return(data.frame(y = mean(x),
+                      ymin = mean(x) - sd(x),
+                      ymax = mean(x) + sd(x)))
+}
+capwords <- function(s, strict = FALSE) {
+    cap <- function(s) paste(toupper(substring(s, 1, 1)),
+                  {s <- substring(s, 2); if(strict) tolower(s) else s},
+                             sep = "", collapse = " " )
+    sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
+}
+
+greys <- RColorBrewer::brewer.pal(name = 'Greys', n = 9)
+c(No=greys[7], Yes=greys[4])
+
+plot_rel_abun <- function(top_feats_rel_abun) {
+  top_feats_rel_abun %>% mutate(pos_cdiff_d1 = capwords(pos_cdiff_d1)) %>%
+    ggplot(aes(rel_abun_c, label, color = pos_cdiff_d1)) +
+    stat_summary(fun.data = mean_sd,
+                 geom = 'pointrange',
+                 position = position_dodge(width = 0.5)) +
     scale_x_log10() +
-    scale_color_brewer(palette = "Set1") +
-    labs(x = "log10 Relative Abundance", y = "") +
-    guides(color = guide_legend(title = "Day 1 _C. difficile_")) +
+    scale_color_manual(values = c(No=greys[7], Yes=greys[4])) +
+    labs(x = expression('Relative Abundance ('*log[10]+1*")")) +
+    guides(color = guide_legend(title = "Positive for \n_C. difficile_")) +
     theme_bw() +
-    theme() +
     theme(
-      axis.text.y = element_markdown(),
+      axis.text.y = element_markdown(size = 8),
       axis.title.y = element_blank(),
-      legend.title = element_markdown(),
+      legend.title = element_markdown(size = 9),
+      legend.text = element_text(size = 8),
       legend.position = "bottom",
+      legend.spacing.x = unit(0.5, "pt"),
+      legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
       legend.margin = margin(t = 0, r = 0, b = 0, l = 0, unit = "pt"),
       plot.margin = unit(x = c(17, 5, 0, 0), units = "pt")
     )
