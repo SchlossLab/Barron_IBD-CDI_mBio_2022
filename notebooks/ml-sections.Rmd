@@ -51,17 +51,7 @@ baseline_prc <- npos / ntot
 
 ## Machine learning prediction of _C. difficile_ colonization based on microbiota composition on day of challenge  
 
-- We now see that microbiota are sufficient for colonization susceptibility/resistance
-- Some taxa are suggestive of being protective vs unprotective (they have cropped up multiple times; think Lachno and Porphyro vs Entero and Lacto) 
-- Goal for this section: Generate a model through which to predict susceptibility based on microbiota 
-- Samples:
-    - 16S sequences from all experiments. 
-    - Determine whether susceptible based on who was colonized at any point throughout experiment
-        - Random Forest 
-        - Taxa that were predictive 
-- This is a hypothesis generating step to computationally identify relevant taxa to advance future biological/mechanistic investigations. 
-
-performance measured by the area under the receiver-operator characteristic curve (AUROC) and the area under the precision-recall curve (AUPRC).
+Performance was measured by the area under the receiver-operator characteristic curve (AUROC) and the area under the precision-recall curve (AUPRC).
 
 - Performance on cross-validation folds of training data:
     - Mean AUROC `r mean_train_auroc` (s.d. `r sd_train_auroc`)
@@ -75,8 +65,10 @@ performance measured by the area under the receiver-operator characteristic curv
 read_csv(here('results','top_20_features.csv')) %>% 
     select(label, mean_diff, sd_diff, percent_models_signif) %>% 
     mutate(mean_decrease = -mean_diff) %>% 
+    select(-mean_diff) %>% 
     rename(stdev = sd_diff,
-           OTU = label) %>% 
+           OTU = label,
+           `% models` = percent_models_signif) %>% 
     kable()
 ```
 
