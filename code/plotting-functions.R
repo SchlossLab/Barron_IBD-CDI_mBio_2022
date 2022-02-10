@@ -148,7 +148,8 @@ plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
 
 get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
   feat_dat <- feat_dat %>%
-    rename(otu = names)
+    rename(otu = names) %>%
+    mutate(perf_decrease = -perf_metric_diff)
   tax_dat <- tax_dat %>%
     rename(otu = OTU) %>%
     mutate(label = str_replace(tax_otu_label, "(^\\w+) (.*)", "_\\1_ \\2"))
@@ -169,7 +170,6 @@ get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
 
   feats <- feat_dat %>%
     group_by(otu) %>%
-      mutate(perf_decrease = -perf_metric_diff) %>%
     summarise(
       mean_auroc = mean(perf_metric),
       sd_auroc = sd(perf_metric),
@@ -191,28 +191,29 @@ get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
     arrange(mean_diff)
 
   top_20 <- feats %>%
-    filter(mean_diff > 0) %>%
-    slice_max(n = 20, order_by = mean_diff) %>%
-    pull(otu)
+      filter(mean_diff > 0) %>%
+      slice_max(n = 20, order_by = mean_diff) %>%
+      mutate(
+          rank = row_number(),
+          label = fct_reorder(as.factor(label), mean_diff),
+          percent_models_signif = frac_sig * 100
+      ) %>%
+      select(otu, label, rank, percent_models_signif)
 
-  return(feats %>%
-    filter(otu %in% top_20) %>%
-    mutate(
-      label = fct_reorder(as.factor(label), mean_diff),
-      percent_models_signif = frac_sig * 100
-    ))
+  return(feat_dat %>% inner_join(top_20, by = 'otu'))
 }
 
 plot_feat_imp <- function(top_feats) {
   # legend title is incorrectly aligned. known issue: https://github.com/tidyverse/ggplot2/issues/2465
   top_feats %>%
     ggplot(aes(
-      x = mean_decrease,
+      x = perf_decrease,
       y = label,
       color = percent_models_signif
     )) +
-    geom_pointrange(aes(xmin = mean_decrease - sd_decrease, xmax = mean_decrease + sd_decrease)) +
+    #geom_pointrange(aes(xmin = mean_decrease - sd_decrease, xmax = mean_decrease + sd_decrease)) +
     geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_boxplot() +
     scale_color_continuous(type = "viridis", name = "% models") +
     labs(y = "", x = "Decrease in AUROC") +
     guides(color = guide_colorbar(label.position = "bottom", # https://github.com/tidyverse/ggplot2/issues/2465
@@ -260,9 +261,7 @@ c(No=greys[7], Yes=greys[4])
 plot_rel_abun <- function(top_feats_rel_abun) {
   top_feats_rel_abun %>% mutate(pos_cdiff_d1 = capwords(pos_cdiff_d1)) %>%
     ggplot(aes(rel_abun_c, label, color = pos_cdiff_d1)) +
-    stat_summary(fun.data = mean_sd,
-                 geom = 'pointrange',
-                 position = position_dodge(width = 0.5)) +
+    geom_boxplot() +
     scale_x_log10() +
     scale_color_manual(values = c(No=greys[7], Yes=greys[4])) +
     labs(x = expression('Relative Abundance ('*log[10]+1*")")) +
