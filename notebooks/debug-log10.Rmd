@@ -1,0 +1,87 @@
+---
+title: 'Debugging log10-transformation of relative abundance plot'
+date: '`r Sys.Date()`'
+output:
+  html_document:
+    keep_md: false
+    theme: paper
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "docs", output_format = "all") })
+---
+```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
+schtools::set_knitr_opts()
+knitr::opts_chunk$set(message = FALSE,
+                      fig.path = here::here('figures', 'debug/'),
+                      dpi = 300
+                      )
+```
+
+```{r deps}
+library(here)
+source(here('code', 'plotting-functions.R'))
+```
+
+```{r data}
+metadat <- readxl::read_excel(here("data", "raw", "ml_metadata.xlsx")) %>%
+  rename(sample = group)
+abs_abun_dat <- data.table::fread(here("data", "raw", "sample.final.shared")) %>%
+    rename(sample = Group) %>%
+    right_join(metadat %>% select(sample, pos_cdiff_d1))
+abs_abun_dat$total_counts <- rowSums(abs_abun_dat %>%
+                                         select(starts_with("Otu")))
+rel_abun_dat <- abs_abun_dat %>%
+    pivot_longer(starts_with("Otu"),
+                 names_to = "otu",
+                 values_to = "count") %>%
+    mutate(rel_abun = count / total_counts,
+           pos_cdiff_d1 = capwords(pos_cdiff_d1)) %>%
+    select(sample, pos_cdiff_d1, otu, rel_abun)
+smallest_non_zero <- rel_abun_dat %>%
+    filter(rel_abun > 0) %>%
+    slice_min(rel_abun, n = 1) %>%
+    pull(rel_abun) %>% .[1]
+
+feat_dat <- read_csv(here("results", "feature-importance_results.csv"))
+tax_dat <- schtools::read_tax(here("data", "processed", "final.taxonomy.tsv"))
+top_feats_rel_abun <- get_top_feats(feat_dat, tax_dat, alpha_level = 0.05) %>%
+    select(otu, label) %>%
+    left_join(rel_abun_dat, by = "otu") %>%
+    mutate(rel_abun_c = rel_abun + smallest_non_zero / 10,
+           rel_abun_1 = rel_abun + 1)
+```
+
+### Original relative abundance, no transformation
+
+```{r relabun_orig_no-transform}
+top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun)
+```
+
+### Original relative abundance, log10-transformed
+
+```{r relabun_orig_log10}
+top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun) + scale_x_log10()
+```
+
+Removes 363 rows since `log10(0) = -Inf`, so we need to add a constant
+
+### Relative abundance + 1, no transformation
+
+```{r relabun_1_no-transform}
+top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_1)
+```
+
+### Relative abundance + 1, log10-transformed
+```{r relabun_1_log10}
+top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_1) + scale_x_log10()
+```
+
+### Relative abundance + tiny constant, no transformation
+```{r relabun_c_no-transform}
+top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_c)
+```
+
+### Relative abundance + tiny constant, log10-transformed
+
+```{r relabun_c_log10}
+top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_c) + scale_x_log10()
+```

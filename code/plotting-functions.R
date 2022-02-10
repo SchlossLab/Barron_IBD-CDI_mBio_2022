@@ -146,7 +146,7 @@ plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
   roc / prc + plot_layout(heights = c(1, 0.5))
 }
 
-get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
+get_top_feats <- function(feat_dat, tax_dat, alpha_level = 0.05) {
   feat_dat <- feat_dat %>%
     rename(otu = names)
   tax_dat <- tax_dat %>%
@@ -254,13 +254,20 @@ capwords <- function(s, strict = FALSE) {
     sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
 }
 
-plot_rel_abun <- function(top_feats_rel_abun) {
-  top_feats_rel_abun %>% mutate(pos_cdiff_d1 = capwords(pos_cdiff_d1)) %>%
-    ggplot(aes(rel_abun_c, label, color = pos_cdiff_d1)) +
+plot_rel_abun <- function(top_feats_rel_abun, xcol = rel_abun) {
+  smallest_non_zero <- top_feats_rel_abun %>%
+      filter(rel_abun > 0) %>%
+      slice_min(rel_abun) %>%
+      pull(rel_abun)
+  top_feats_rel_abun %>%
+      mutate(pos_cdiff_d1 = capwords(pos_cdiff_d1),
+             rel_abun_c = rel_abun + smallest_non_zero / 10,
+             rel_abun_1 = rel_abun + 1) %>%
+    ggplot(aes({{ xcol }}, label, color = pos_cdiff_d1)) +
     geom_boxplot() +
-    scale_x_log10() +
+    #scale_x_continuous(trans = 'log10') +
     scale_color_manual(values = c(No='#404040', Yes='#999999')) +
-    labs(x = expression('Relative Abundance ('*log[10]+1*")")) +
+    #labs(x = expression('Relative Abundance ('*log[10]+C*')')) +
     guides(color = guide_legend(title = "Positive for \n_C. difficile_")) +
     theme_bw() +
     theme(
