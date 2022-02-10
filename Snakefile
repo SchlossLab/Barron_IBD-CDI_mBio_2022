@@ -169,7 +169,8 @@ rule plot_feature_importance:
         feat='results/feature-importance_results.csv',
         tax='data/processed/final.taxonomy.tsv'
     output:
-        plot='figures/feature-importance.png'
+        plot='figures/feature-importance.png',
+        csv='results/top_20_features.csv'
     log: "log/plot_feature-importance.txt"
     script:
         'code/plot_feature-importance.R'

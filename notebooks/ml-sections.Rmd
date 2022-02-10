@@ -69,7 +69,17 @@ performance measured by the area under the receiver-operator characteristic curv
     - Mean AUROC `r mean_test_auroc` (s.d. `r sd_test_auroc`)
     - Mean AUPRC `r mean_test_auprc` (s.d. `r sd_test_auprc`)
 
-TODO feature importance
+### Feature importance
+
+```{r top_OTUs}
+read_csv(here('results','top_20_features.csv')) %>% 
+    select(label, mean_diff, sd_diff, percent_models_signif) %>% 
+    mutate(mean_decrease = -mean_diff) %>% 
+    rename(stdev = sd_diff,
+           OTU = label) %>% 
+    kable()
+```
+
 
 ## Machine learning methods
 
