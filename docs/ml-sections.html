@@ -412,29 +412,7 @@ pre code {
 <div id="machine-learning-prediction-of-c.-difficile-colonization-based-on-microbiota-composition-on-day-of-challenge" class="section level2">
 <h2>Machine learning prediction of <em>C. difficile</em> colonization
 based on microbiota composition on day of challenge</h2>
-<ul>
-<li>We now see that microbiota are sufficient for colonization
-susceptibility/resistance</li>
-<li>Some taxa are suggestive of being protective vs unprotective (they
-have cropped up multiple times; think Lachno and Porphyro vs Entero and
-Lacto)</li>
-<li>Goal for this section: Generate a model through which to predict
-susceptibility based on microbiota</li>
-<li>Samples:
-<ul>
-<li>16S sequences from all experiments.</li>
-<li>Determine whether susceptible based on who was colonized at any
-point throughout experiment
-<ul>
-<li>Random Forest</li>
-<li>Taxa that were predictive</li>
-</ul></li>
-</ul></li>
-<li>This is a hypothesis generating step to computationally identify
-relevant taxa to advance future biological/mechanistic
-investigations.</li>
-</ul>
-<p>performance measured by the area under the receiver-operator
+<p>Performance was measured by the area under the receiver-operator
 characteristic curve (AUROC) and the area under the precision-recall
 curve (AUPRC).</p>
 <ul>
@@ -448,165 +426,116 @@ curve (AUPRC).</p>
 <li>Mean AUPRC 0.84 (s.d. 0.065)</li>
 </ul></li>
 </ul>
-<div id="feature-importance" class="section level3">
-<h3>Feature importance</h3>
+<div id="feature-importance-top-20-otus" class="section level3">
+<h3>Feature importance: top 20 OTUs</h3>
 <table>
-<colgroup>
-<col width="36%" />
-<col width="11%" />
-<col width="11%" />
-<col width="25%" />
-<col width="15%" />
-</colgroup>
 <thead>
 <tr class="header">
 <th align="left">OTU</th>
-<th align="right">mean_diff</th>
 <th align="right">stdev</th>
-<th align="right">percent_models_signif</th>
-<th align="right">mean_decrease</th>
+<th align="right">% models</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left"><em>Helicobacter</em> (OTU 21)</td>
-<td align="right">0.0005545</td>
 <td align="right">0.0023031</td>
 <td align="right">93.6</td>
-<td align="right">-0.0005545</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Lachnospiraceae</em> (OTU 38)</td>
-<td align="right">0.0005561</td>
 <td align="right">0.0030798</td>
 <td align="right">85.6</td>
-<td align="right">-0.0005561</td>
 </tr>
 <tr class="odd">
 <td align="left"><em>Dorea</em> (OTU 149)</td>
-<td align="right">0.0005938</td>
 <td align="right">0.0025554</td>
 <td align="right">84.8</td>
-<td align="right">-0.0005938</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Lactobacillus</em> (OTU 15)</td>
-<td align="right">0.0005947</td>
 <td align="right">0.0026614</td>
 <td align="right">85.4</td>
-<td align="right">-0.0005947</td>
 </tr>
 <tr class="odd">
 <td align="left"><em>Acetatifactor</em> (OTU 172)</td>
-<td align="right">0.0006135</td>
 <td align="right">0.0026414</td>
 <td align="right">87.8</td>
-<td align="right">-0.0006135</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Lactobacillus</em> (OTU 26)</td>
-<td align="right">0.0006454</td>
 <td align="right">0.0030530</td>
 <td align="right">85.2</td>
-<td align="right">-0.0006454</td>
 </tr>
 <tr class="odd">
 <td align="left"><em>Porphyromonadaceae</em> (OTU 29)</td>
-<td align="right">0.0006512</td>
 <td align="right">0.0032917</td>
 <td align="right">65.4</td>
-<td align="right">-0.0006512</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Oscillibacter</em> (OTU 164)</td>
-<td align="right">0.0006656</td>
 <td align="right">0.0034880</td>
 <td align="right">78.2</td>
-<td align="right">-0.0006656</td>
 </tr>
 <tr class="odd">
 <td align="left"><em>Lachnospiraceae</em> (OTU 23)</td>
-<td align="right">0.0007161</td>
 <td align="right">0.0036369</td>
 <td align="right">60.4</td>
-<td align="right">-0.0007161</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Clostridium</em> IV (OTU 126)</td>
-<td align="right">0.0007600</td>
 <td align="right">0.0042812</td>
 <td align="right">45.2</td>
-<td align="right">-0.0007600</td>
 </tr>
 <tr class="odd">
 <td align="left"><em>Firmicutes</em> (OTU 69)</td>
-<td align="right">0.0008873</td>
 <td align="right">0.0051307</td>
 <td align="right">77.6</td>
-<td align="right">-0.0008873</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Lachnospiraceae</em> (OTU 98)</td>
-<td align="right">0.0009233</td>
 <td align="right">0.0031928</td>
 <td align="right">86.4</td>
-<td align="right">-0.0009233</td>
 </tr>
 <tr class="odd">
 <td align="left"><em>Bifidobacterium</em> (OTU 12)</td>
-<td align="right">0.0010722</td>
 <td align="right">0.0034798</td>
 <td align="right">75.0</td>
-<td align="right">-0.0010722</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Lachnospiraceae</em> (OTU 27)</td>
-<td align="right">0.0012169</td>
 <td align="right">0.0046644</td>
 <td align="right">59.6</td>
-<td align="right">-0.0012169</td>
 </tr>
 <tr class="odd">
 <td align="left"><em>Lachnospiraceae</em> (OTU 54)</td>
-<td align="right">0.0015468</td>
 <td align="right">0.0051692</td>
 <td align="right">65.8</td>
-<td align="right">-0.0015468</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Ruminococcaceae</em> (OTU 56)</td>
-<td align="right">0.0015730</td>
 <td align="right">0.0047184</td>
 <td align="right">60.6</td>
-<td align="right">-0.0015730</td>
 </tr>
 <tr class="odd">
 <td align="left"><em>Erysipelotrichaceae</em> (OTU 10)</td>
-<td align="right">0.0017732</td>
 <td align="right">0.0045827</td>
 <td align="right">78.4</td>
-<td align="right">-0.0017732</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Porphyromonadaceae</em> (OTU 14)</td>
-<td align="right">0.0022489</td>
 <td align="right">0.0041229</td>
 <td align="right">69.4</td>
-<td align="right">-0.0022489</td>
 </tr>
 <tr class="odd">
 <td align="left"><em>Erysipelotrichaceae</em> (OTU 222)</td>
-<td align="right">0.0022672</td>
 <td align="right">0.0047096</td>
 <td align="right">86.4</td>
-<td align="right">-0.0022672</td>
 </tr>
 <tr class="even">
 <td align="left"><em>Enterobacteriaceae</em> (OTU 7)</td>
-<td align="right">0.0078371</td>
 <td align="right">0.0121111</td>
 <td align="right">58.0</td>
-<td align="right">-0.0078371</td>
 </tr>
 </tbody>
 </table>
