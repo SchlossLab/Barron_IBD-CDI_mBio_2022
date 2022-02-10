@@ -6,5 +6,6 @@ log/
 results/group*
 results/runs/
 .Rproj.user
+Rplots.pdf
 .snakemake/
 *_test*
