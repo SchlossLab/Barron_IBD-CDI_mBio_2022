@@ -229,8 +229,7 @@ rule make_figure_5:
               rules.plot_roc_curves.output,
               rules.plot_feature_importance.output]
     output:
-        pdf='figures/Figure5.pdf',
-        tiff='figures/Figure5.tiff'
+        pdf='figures/Figure5.pdf'
     script:
         'code/make-figure-5.R'
 

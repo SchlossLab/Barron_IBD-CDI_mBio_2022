@@ -77,10 +77,7 @@ features <- plot_grid(feat_imp_plot, rel_abun_plot,
 fig5 <- plot_grid(performance, features,
   rel_heights = c(0.4, 1), ncol = 1
 )
-ggsave(
-  plot = fig5, filename = "figures/Figure5.tiff", dpi = 300,
-  width = 174, height = 189, units = "mm"
-)
+
 ggsave(
   plot = fig5, filename = "figures/Figure5.pdf", dpi = 300,
   width = 174, height = 189, units = "mm"
