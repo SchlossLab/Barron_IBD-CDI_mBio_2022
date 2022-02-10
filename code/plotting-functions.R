@@ -182,8 +182,8 @@ get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
       lowerq = quantile(perf_decrease)[2],
       upperq = quantile(perf_decrease)[4],
       iqr = upperq - lowerq,
-      lower_whisker = lowerq - 1.5 * iqr,
-      upper_whisker = upperq + 1.5 * iqr
+      lower_whisker = lowerq + 1.5 * lowerq,
+      upper_whisker = upperq - 1.5 * upperq
     ) %>%
     inner_join(signif_feats, by = c("otu")) %>%
     left_join(tax_dat %>% select(otu, label), by = "otu") %>%
@@ -211,8 +211,8 @@ plot_feat_imp <- function(top_feats) {
       y = label,
       color = percent_models_signif
     )) +
-    geom_pointrange(aes(xmin = mean_decrease - sd_decrease, xmax = mean_decrease + sd_decrease)) +
     geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_pointrange(aes(xmin = lower_whisker, xmax = upper_whisker)) +
     scale_color_continuous(type = "viridis", name = "% models") +
     labs(y = "", x = "Decrease in AUROC") +
     guides(color = guide_colorbar(label.position = "bottom", # https://github.com/tidyverse/ggplot2/issues/2465
@@ -245,8 +245,21 @@ mean_iqr <- function(x) {
 mean_sd <- function(x) {
     return(data.frame(y = mean(x),
                       ymin = mean(x) - sd(x),
-                      ymax = mean(x) + sd(x)))
+                      ymax = mean(x) + sd(x))
+           )
 }
+
+mean_whisker <- function(x) {
+    meanx <- mean(x)
+    lowerq <- quantile(x)[2]
+    upperq <- quantile(x)[4]
+    iqr <- upperq - lowerq
+    return(data.frame(y = meanx,
+                      ymin = meanx - lowerq * 1.5,
+                      ymax = meanx + upperq * 1.5)
+           )
+}
+
 capwords <- function(s, strict = FALSE) {
     cap <- function(s) paste(toupper(substring(s, 1, 1)),
                   {s <- substring(s, 2); if(strict) tolower(s) else s},
@@ -260,7 +273,7 @@ c(No=greys[7], Yes=greys[4])
 plot_rel_abun <- function(top_feats_rel_abun) {
   top_feats_rel_abun %>% mutate(pos_cdiff_d1 = capwords(pos_cdiff_d1)) %>%
     ggplot(aes(rel_abun_c, label, color = pos_cdiff_d1)) +
-    stat_summary(fun.data = mean_sd,
+    stat_summary(fun.data = mean_whisker,
                  geom = 'pointrange',
                  position = position_dodge(width = 0.5)) +
     scale_x_log10() +
