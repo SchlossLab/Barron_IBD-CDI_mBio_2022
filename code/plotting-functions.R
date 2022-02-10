@@ -147,27 +147,27 @@ plot_perf_box <- function(perf_dat, baseline_prc = 0.3387097) {
 }
 
 get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
-  feat_dat <- feat_dat %>%
+  feat_dat2 <- feat_dat %>%
     rename(otu = names)
-  tax_dat <- tax_dat %>%
+  tax_dat2 <- tax_dat %>%
     rename(otu = OTU) %>%
     mutate(label = str_replace(tax_otu_label, "(^\\w+) (.*)", "_\\1_ \\2"))
 
-  nseeds <- feat_dat %>%
+  nseeds <- feat_dat2 %>%
     pull(seed) %>%
     unique() %>%
     length()
-  ngroups <- feat_dat %>%
+  ngroups <- feat_dat2 %>%
     pull(test_group) %>%
     unique() %>%
     length()
 
-  signif_feats <- feat_dat %>%
+  signif_feats <- feat_dat2 %>%
     filter(pvalue < alpha_level) %>%
     group_by(otu) %>%
     summarize(frac_sig = n() / (nseeds * ngroups))
 
-  feats <- feat_dat %>%
+  feats <- feat_dat2 %>%
     group_by(otu) %>%
       mutate(perf_decrease = -perf_metric_diff) %>%
     summarise(
@@ -182,11 +182,11 @@ get_top_feats <- function(test_dat, tax_dat, alpha_level = 0.05) {
       lowerq = quantile(perf_decrease)[2],
       upperq = quantile(perf_decrease)[4],
       iqr = upperq - lowerq,
-      lower_whisker = lowerq + 1.5 * lowerq,
-      upper_whisker = upperq - 1.5 * upperq
+      lower_whisker = if_else(mean_decrease < 0 & lowerq < 0, lowerq + 1.5 * lowerq, lowerq - 1.5 * lowerq),
+      upper_whisker = if_else(mean_decrease < 0 & upperq < 0, upperq - 1.5 * upperq, upperq + 1.5 * upperq)
     ) %>%
     inner_join(signif_feats, by = c("otu")) %>%
-    left_join(tax_dat %>% select(otu, label), by = "otu") %>%
+    left_join(tax_dat2 %>% select(otu, label), by = "otu") %>%
     ungroup() %>%
     arrange(mean_diff)
 
