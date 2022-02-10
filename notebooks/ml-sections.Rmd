@@ -64,10 +64,11 @@ Performance was measured by the area under the receiver-operator characteristic 
 ```{r top_OTUs}
 read_csv(here('results','top_20_features.csv')) %>% 
     mutate(mean_decrease = -mean_diff) %>% 
-    select(label, mean_diff, sd_diff, percent_models_signif, -mean_diff) %>% 
+    select(label, mean_decrease, sd_diff, percent_models_signif, -mean_diff) %>% 
     rename(stdev = sd_diff,
            OTU = label,
            `% models` = percent_models_signif) %>% 
+    arrange(mean_decrease) %>%
     kable()
 ```
 
