@@ -55,10 +55,10 @@ Performance was measured by the area under the receiver-operator characteristic 
 
 - Performance on cross-validation folds of training data:
     - Mean AUROC `r mean_train_auroc` (s.d. `r sd_train_auroc`).
-    - Baseline AUPRC: `r baseline_prc`
+
 - Performance on held-out test data: 
     - Mean AUROC `r mean_test_auroc` (s.d. `r sd_test_auroc`)
-    - Mean AUPRC `r mean_test_auprc` (s.d. `r sd_test_auprc`)
+    - Mean AUPRC `r mean_test_auprc` (s.d. `r sd_test_auprc`). Baseline AUPRC: `r baseline_prc`
 
 ### Feature importance: Top 20 OTUs
 
@@ -77,9 +77,27 @@ read_csv(here('results','top_20_features.csv')) %>%
 
 ## Machine learning methods
 
-TODO describe pipeline [@topcuoglu_framework_2020]
+Supervised machine learning was performed according to the best practices
+outlined by Topçuoğlu _et al._ [@topcuoglu_framework_2020] and implemented in
+the mikropml R package v1.2.1 [@topcuoglu_mikropml_2021].
+Models were trained on the abundance data on day 0 of the experiment to predict
+the presence of _C. difficile_ on day 1 of the experiment.
+The data were first pre-processed by centering and scaling abundance counts, 
+collapsing perfectly correlated OTUs, and removing OTUs with zero variance.
+For 100 random seeds, the data were randomly split into training and testing
+sets with 65% and 35% of the samples in each, respectively.
+Random forest models were trained on the training sets using 5-fold
+cross-validation to select the best hyper-parameter value (`mtry`: the number of
+OTUs included per tree), then the best models were evaluated with the
+held-out test sets by computing the AUROC and AUPRC.
 
-mikropml version 1.2.1 [@topcuoglu_mikropml_2021]
+The most important OTUs contributing model performance were determined by 
+permutation tests.
+For each trained model, each OTU in the test dataset was randomly shuffled 100 
+times and the new permuted performance (AUROC) was measured.
+A given OTU was considered significantly important for a model at an alpha level of 0.05,
+where less than 5% of the permuted AUROC values were greater than the original test AUROC.
+The OTUs that decreased the AUROC the most when permuted were the most important.
 
 The workflow used to perform the machine learning analysis is available at
 https://github.com/SchlossLab/Barron_IBD-CDI_2022
@@ -120,5 +138,5 @@ deviation.
 Color represents the percentage of models for which the feature's permutation
 AUROC was significantly different from the actual AUROC. 
 **E)** Log$_{10}$ relative abundance for the top 20 most important
-OTUs on day 0 of the experiment. 
+OTUs on day 0 of the experiment, colored by _C. difficile_ presence on day 1.
 The dashed line represents the limit of detection.
