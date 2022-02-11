@@ -49,8 +49,7 @@ top_feats_rel_abun <- top_feats %>%
   select(otu, label) %>%
   left_join(rel_abun_dat, by = "otu")
 rel_abun_plot <- top_feats_rel_abun %>%
-  plot_rel_abun(xcol = rel_abun_c) +
-  geom_vline(xintercept = smallest_non_zero, linetype = 'dashed') +
+  plot_rel_abun(xcol = rel_abun_c, xint = smallest_non_zero) +
   scale_x_log10() +
   labs(x = expression('Relative Abundance ('*log[10]*')')) +
   theme(axis.text.y = element_blank())

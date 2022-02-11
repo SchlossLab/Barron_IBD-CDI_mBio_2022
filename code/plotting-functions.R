@@ -211,8 +211,8 @@ plot_feat_imp <- function(top_feats) {
       y = label,
       color = percent_models_signif
     )) +
-    geom_pointrange(aes(xmin = mean_decrease - sd_decrease, xmax = mean_decrease + sd_decrease)) +
     geom_vline(xintercept = 0, linetype = "dashed") +
+    geom_pointrange(aes(xmin = mean_decrease - sd_decrease, xmax = mean_decrease + sd_decrease)) +
     scale_color_continuous(type = "viridis", name = "% models") +
     labs(y = "", x = "Decrease in AUROC") +
     guides(color = guide_colorbar(label.position = "bottom", # https://github.com/tidyverse/ggplot2/issues/2465
@@ -254,10 +254,11 @@ capwords <- function(s, strict = FALSE) {
     sapply(strsplit(s, split = " "), cap, USE.NAMES = !is.null(names(s)))
 }
 
-plot_rel_abun <- function(top_feats_rel_abun, xcol = rel_abun) {
+plot_rel_abun <- function(top_feats_rel_abun, xcol = rel_abun, xint = 0) {
   top_feats_rel_abun %>%
     mutate(pos_cdiff_d1 = capwords(pos_cdiff_d1)) %>%
     ggplot(aes({{ xcol }}, label, color = pos_cdiff_d1)) +
+    geom_vline(xintercept = xint, linetype = 'dashed') +
     geom_boxplot() +
     scale_color_manual(values = c(No='#404040', Yes='#999999')) +
     guides(color = guide_legend(title = "Positive for \n_C. difficile_")) +
