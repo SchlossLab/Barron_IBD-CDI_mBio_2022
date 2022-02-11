@@ -92,13 +92,15 @@ cross-validation to select the best hyper-parameter value (`mtry`: the number of
 OTUs included per tree), then the best models were evaluated with the
 held-out test sets by computing the AUROC and AUPRC.
 
-The most important OTUs contributing model performance were determined by 
-permutation tests.
+The most important OTUs contributing to model performance were determined by 
+permutation feature importance tests.
 For each trained model, each OTU in the test dataset was randomly shuffled 100 
-times and the new permuted performance (AUROC) was measured.
-A given OTU was considered significantly important for a model at an alpha level of 0.05,
-where less than 5% of the permuted AUROC values were greater than the original test AUROC.
-The OTUs that decreased the AUROC the most when permuted were the most important.
+times and the new permutation performance (AUROC) was measured.
+A given OTU was considered significantly important for a model at an alpha level
+of 0.05, where less than 5% of the permutation AUROC values were greater than the
+original test AUROC.
+The OTUs that decreased the AUROC the most when permuted were considered the 
+most important for model performance.
 
 The workflow used to perform the machine learning analysis is available at
 https://github.com/SchlossLab/Barron_IBD-CDI_2022
@@ -126,18 +128,18 @@ cross-validation folds during model training,
 mean AUROC on the held-out test data, 
 and mean area under the precision-recall curve (AUPRC) on the held-out test data. 
 The dashed grey lines represent the baseline AUROC (0.5) and AUPRC (`r baseline_prc`). 
-**B)** Receiver-operator characteristic curve for the test data. 
-Mean specificity is plotted against sensitivity. 
+**B)** Receiver-operator characteristic curve for the test data, with mean 
+specificity plotted against sensitivity. 
 The light green shaded area shows the standard deviation. 
-**C)** Precision-recall curve for the test data. 
-Mean precision is plotted against recall. 
+**C)** Precision-recall curve for the test data, with mean precision plotted 
+against recall. 
 The light blue shaded area shows the standard deviation. 
-**D)** Top 20 most important OTUs as determined by permutation tests. 
-Features with a larger decrease in AUROC when permuted are more important. 
-The points are the median decrease in AUROC while the tails are the standard 
+**D)** Top 20 most important OTUs as determined by permutation feature importance. 
+OTUs with a greater decrease in AUROC when permuted are more important. 
+The points represent the median decrease in AUROC with the tails as the standard 
 deviation. 
-Color represents the percentage of models for which the feature's permutation
-AUROC was significantly different from the actual AUROC. 
+Color represents the percentage of models for which an OTU's permutation
+AUROC was significantly different from the actual AUROC (p < 0.05). 
 **E)** Log$_{10}$ relative abundance for the top 20 most important
 OTUs on day 0 of the experiment, colored by _C. difficile_ presence on day 1.
 The dashed line represents the limit of detection.
