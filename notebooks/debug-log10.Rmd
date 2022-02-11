@@ -99,7 +99,7 @@ top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_c)
 top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_c) + scale_x_log10()
 ```
 
-## What does log_${10}$-transforming do to a fake dataset?
+## What does log$_{10}$-transforming do to a fake dataset?
 
 ```{r fake-data}
 constant <- 0.0001
@@ -130,7 +130,7 @@ dat %>%
     theme_bw()
 ```
 
-## Use log$_10$(rel_abun + C) and show the limit of detection
+## Use log$_{10}$(rel_abun + C) and show the limit of detection
 
 ```{r relabun_c_log10_lod}
 top_feats_rel_abun %>% 

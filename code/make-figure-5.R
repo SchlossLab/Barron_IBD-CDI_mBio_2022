@@ -35,19 +35,24 @@ abs_abun_dat <- data.table::fread("data/raw/sample.final.shared") %>%
 abs_abun_dat$total_counts <- rowSums(abs_abun_dat %>% select(starts_with("Otu")))
 rel_abun_dat <- abs_abun_dat %>%
   pivot_longer(starts_with("Otu"), names_to = "otu", values_to = "count") %>%
-  mutate(rel_abun = count / total_counts,
-         rel_abun_c = rel_abun + 1) %>%
-  select(sample, pos_cdiff_d1, otu, rel_abun, rel_abun_c)
+  mutate(rel_abun = count / total_counts) %>%
+  select(sample, pos_cdiff_d1, otu, rel_abun)
+smallest_non_zero <- rel_abun_dat %>%
+    filter(rel_abun > 0) %>%
+    slice_min(rel_abun) %>%
+    pull(rel_abun) %>% .[1]
+rel_abun_dat <- rel_abun_dat %>%
+    mutate(rel_abun_c = rel_abun + smallest_non_zero / 10,
+           rel_abun_1 = rel_abun + 1)
+
 top_feats_rel_abun <- top_feats %>%
   select(otu, label) %>%
-  left_join(rel_abun_dat, by = "otu") %>%
-  mutate(cdiff_d1_status = case_when(
-    pos_cdiff_d1 == "yes" ~ "pos.",
-    pos_cdiff_d1 == "no" ~ "neg.",
-    TRUE ~ "NA"
-  ))
+  left_join(rel_abun_dat, by = "otu")
 rel_abun_plot <- top_feats_rel_abun %>%
-  plot_rel_abun() +
+  plot_rel_abun(xcol = rel_abun_c) +
+  geom_vline(xintercept = smallest_non_zero, linetype = 'dashed') +
+  scale_x_log10() +
+  labs(x = expression('Relative Abundance ('*log[10]*')')) +
   theme(axis.text.y = element_blank())
 
 
