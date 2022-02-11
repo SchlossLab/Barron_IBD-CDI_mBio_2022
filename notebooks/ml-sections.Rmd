@@ -9,6 +9,7 @@ output:
   html_document:
     theme: paper
     self-contained: true
+  word_document: default
 fontsize: 12pt
 geometry: margin=1.0in
 bibliography: references.bib
