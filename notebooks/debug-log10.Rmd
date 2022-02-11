@@ -130,3 +130,13 @@ dat %>%
     theme_bw()
 ```
 
+## Use log$_10$(rel_abun + C) and show the limit of detection
+
+```{r relabun_c_log10_lod}
+top_feats_rel_abun %>% 
+    plot_rel_abun(xcol = rel_abun_c) + 
+    geom_vline(xintercept = smallest_non_zero, linetype = 'dashed') +
+    scale_x_log10() +
+    labs(x = expression('Relative Abundance ('*log[10]+C*')'))
+```
+
