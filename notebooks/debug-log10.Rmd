@@ -10,7 +10,8 @@ knit: (function(inputFile, encoding) {
 ---
 ```{r knitr_settings, eval=TRUE, echo=FALSE, cache=FALSE}
 schtools::set_knitr_opts()
-knitr::opts_chunk$set(message = FALSE,
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
                       fig.path = here::here('figures', 'debug/'),
                       dpi = 300
                       )
@@ -56,7 +57,7 @@ top_feats_rel_abun <- get_top_feats(feat_dat, tax_dat, alpha_level = 0.05) %>%
 top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun)
 ```
 
-### Original relative abundance, log10-transformed
+### Original relative abundance, log$_{10}$-transformed
 
 ```{r relabun_orig_log10}
 top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun) + scale_x_log10()
@@ -70,18 +71,62 @@ Removes 363 rows since `log10(0) = -Inf`, so we need to add a constant
 top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_1)
 ```
 
-### Relative abundance + 1, log10-transformed
+### Relative abundance + 1, log$_{10}$-transformed
 ```{r relabun_1_log10}
 top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_1) + scale_x_log10()
 ```
 
+...that looks the same as above, just +1. 
+Is there a problem in the scaling function?
+What if I manually log-10 transform it?
+
+```{r relabun_1_log10-manual}
+top_feats_rel_abun %>% plot_rel_abun(xcol = log10(rel_abun_1))
+```
+
+The x axis numbers are different but the scale is still linear!
+So maybe adding 1 is the problem?
+
 ### Relative abundance + tiny constant, no transformation
+
 ```{r relabun_c_no-transform}
 top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_c)
 ```
 
-### Relative abundance + tiny constant, log10-transformed
+### Relative abundance + tiny constant, log$_{10}$-transformed
 
 ```{r relabun_c_log10}
 top_feats_rel_abun %>% plot_rel_abun(xcol = rel_abun_c) + scale_x_log10()
 ```
+
+## What does log_${10}$-transforming do to a fake dataset?
+
+```{r fake-data}
+constant <- 0.0001
+dat <- tibble(rel_abun = seq.int(0, 1, by = 0.01))  %>% 
+    mutate(rel_abun_log10 = log10(rel_abun),
+           rel_abun_1_log10 = log10(rel_abun + 1),
+           rel_abun_c_log10 = log10(rel_abun + constant),
+           rank = row_number())
+set1colors <- RColorBrewer::brewer.pal(9, 'Set1')
+dat %>% 
+    pivot_longer(c(starts_with('rel_abun')), 
+                 names_to = 'rel_abun_scale', 
+                 values_to = 'rel_abun_value') %>% 
+    mutate(rel_abun_scale = case_when(rel_abun_scale == 'rel_abun_1_log10' ~ 'log10(rel_abun + 1)',
+                                      rel_abun_scale == 'rel_abun_c_log10' ~ 'log10(rel_abun + C)',
+                                      rel_abun_scale == 'rel_abun_log10' ~ 'log10(rel_abun)',
+                                      TRUE ~ rel_abun_scale)) %>% 
+    ggplot(aes(rel_abun_value, rank, color = rel_abun_scale)) +
+    geom_line(aes(size = rel_abun_scale), alpha = 0.5) +
+    scale_size_manual(values = c(rel_abun = 1.5,
+                                `log10(rel_abun)` = 1.5,
+                                `log10(rel_abun + C)` = 2.5,
+                                `log10(rel_abun + 1)` = 1.5)) +
+    scale_color_manual(values=c(rel_abun = set1colors[9],
+                                `log10(rel_abun)` = set1colors[5],
+                                `log10(rel_abun + C)` = set1colors[2],
+                                `log10(rel_abun + 1)` = set1colors[1])) + 
+    theme_bw()
+```
+
