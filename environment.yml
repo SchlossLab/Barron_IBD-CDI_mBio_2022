@@ -14,7 +14,7 @@ dependencies:
   - r-future.apply
   - r-ggtext
   - r-here
-  - r-mikropml>=1.2.1
+  - r-mikropml>1.2.2
   - r-patchwork
   - r-rmarkdown
   - r-rpart
