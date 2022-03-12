@@ -40,13 +40,10 @@ Here's a small example DAG if we were to use only 2 seeds and 2 ML methods:
 1. Clone or download this repo and go to the directory.
 
     ``` sh
-    git clone https://github.com/SchlossLab/mikropml-snakemake-workflow
+    git clone https://github.com/SchlossLab/Barron_IBD-CDI_2022
     cd mikropml-snakemake-workflow
     ```
-
-    Alternatively, if you're viewing this on GitHub,
-    you can click the green `Use this template` button to create
-    your own version of the repo on GitHub, then clone it.
+    Alternatively, you can fork it before cloning.
 
 1. Install the dependencies.
 
