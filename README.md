@@ -1,6 +1,7 @@
 # Barron IBD-CDI 2022
 
 [![paper](https://img.shields.io/badge/paper-mBio-red)](https://doi.org/10.1128/mbio.01904-22)
+[![DOI](https://zenodo.org/badge/447749271.svg)](https://zenodo.org/badge/latestdoi/447749271)
 
 ML analysis to predict _C. difficile_ colonization in fecal communities of IBD & control mice.
 
